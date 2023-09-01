@@ -37,7 +37,8 @@ router.post('/register', async (req: Request, res: Response) => {
         if (error) {
             throw new Error(error.message);
         }
-
+        // send email 
+        await sendWelcomeEmail(email);
         res.json({ message: 'User registered successfully', user });
     } catch (error) {
         console.error(error);

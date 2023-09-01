@@ -3,7 +3,6 @@ import { ProxyAgent, TextMSG, Types } from 'diner-utilities';
 import db from './db';
 import { ResyService } from 'diner-resy';
 import { logRedisStatus, markCompleteIfToday, seatingCheck } from './helpers';
-import { ConfirmBookingResponse, Watcher } from 'diner-utilities/types';
 
 const RESY_API_KEY = process.env.RESY_API_KEY!;
 const RESERVATION_INTERVAL = process.env.RESERVATION_INTERVAL ? parseInt(process.env.RESERVATION_INTERVAL) : 1000 * 10; // 10 seconds
@@ -32,7 +31,7 @@ export const watcherQueue = new Queue<Types.Watcher>('watcherQueue', {
 logRedisStatus(watcherQueue);
 
 watcherQueue.process(async (job) => {
-    const watcherConfig = job.data as Watcher;
+    const watcherConfig = job.data as Types.Watcher;
 
     try {
         const isToday = await markCompleteIfToday(watcherConfig);
@@ -55,7 +54,7 @@ watcherQueue.process(async (job) => {
             user: watcherConfig.user,
         });
 
-        const {data:confirmed} : { data: ConfirmBookingResponse }= await Resy.confirmBooking(
+        const {data:confirmed} : { data: Types.ConfirmBookingResponse }= await Resy.confirmBooking(
             {
                 book_token: bookingRequest.bookToken,
                 user: watcherConfig.user,
@@ -92,7 +91,7 @@ watcherQueue.process(async (job) => {
 });
 
 watcherQueue.on('failed', async (job, error) => {
-    const watcherConfig = job.data as Watcher;
+    const watcherConfig = job.data as Types.Watcher;
 
     try {
         console.log(`Watcher job failed with error ${error}`);

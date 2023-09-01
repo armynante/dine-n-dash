@@ -18,8 +18,6 @@ console.log('Starting server');
 const app = express();
 app.use(express.json());
 
-
-
 /* 
  * ########################################
  * #######     SERVER ROUTES         ######

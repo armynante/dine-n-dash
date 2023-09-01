@@ -1,23 +1,17 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-  },
+  "files": [],
   "references": [
-    { "path": "./packages/utility" },
-    { "path": "./packages/resy" },
-    { "path": "./apps/server" },
-    { "path": "./apps/cli"},
-    { "path": "./apps/worker"},
-    { "path": "./apps/controller"},
-    { "path": "./apps/watcher"},
-    { "path": "./tools/deploy" },
+    { "path": "./packages/utility/tsconfig.json" },
+    { "path": "./packages/resy/tsconfig.json" },
+    { "path": "./apps/server/tsconfig.json" },
+    { "path": "./apps/cli/tsconfig.json"},
+    { "path": "./apps/worker/tsconfig.json"},
+    { "path": "./apps/controller/tsconfig.json"},
+    { "path": "./apps/watcher/tsconfig.json"},
+    { "path": "./tools/deploy/tsconfig.json" },
   ],
-  "exclude": ["**/node_modules"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

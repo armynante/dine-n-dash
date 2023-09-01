@@ -9,9 +9,10 @@
   "bin": {
     "diner-ctrl": "./dist/index.mjs"
   },
+  
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w"
+    "dev": "tsc -b -w"
   },
   "keywords": [
     "cli",

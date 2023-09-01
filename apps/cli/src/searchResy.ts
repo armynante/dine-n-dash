@@ -5,7 +5,6 @@ import axios from 'axios';
 // @ts-ignore
 import DatePrompt from 'inquirer-date-prompt';
 import { AuthHelpers, TimeHelpers, Types } from 'diner-utilities';
-import 'dotenv/config';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 inquirer.registerPrompt('date', DatePrompt);

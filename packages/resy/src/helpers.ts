@@ -7,7 +7,6 @@ const { flatten, keys, times } = pkg;
 import { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
-import { ResyBookingRequestResponse, ResyReservationParams, SeatingQuery } from 'diner-utilities/types';
 dayjs.extend(advancedFormat);
 
 // Header required for resy api
@@ -35,7 +34,7 @@ export const formatResyTokenRequest = (request:Types.ResyBookingRequest) => {
 /**
  * @description - formats the request for the Resy API
  */
-export function formatParams (request: SeatingQuery) : ResyReservationParams {
+export function formatParams (request: Types.SeatingQuery) : Types.ResyReservationParams {
     const { day, partySize, venue } = request;
     const params = {
         day: dayjs(day).format('YYYY-MM-DD'),
@@ -87,7 +86,7 @@ export function formatUserResponse (res:AxiosResponse) :Types.ResyUser {
 }
 
 // eslint-disable-next-line max-len
-export const formatResyBookingResponse = (res:AxiosResponse) :ResyBookingRequestResponse => {
+export const formatResyBookingResponse = (res:AxiosResponse) :Types.ResyBookingRequestResponse => {
     const { data } = res;
 
     if (!data) { throw new Error('No data returned from Resy API'); }

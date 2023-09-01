@@ -1,13 +1,10 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.settings.json",
   "compilerOptions": {
     "module": "es2022",
     "moduleResolution": "Node",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "strict": true,
     "outDir": "./dist",
-    "rootDir": ".",
+    "rootDir": "./src",
     "composite": true,
   },
   "exclude": [

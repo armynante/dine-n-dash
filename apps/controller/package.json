@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w",
+    "dev": "tsc -b -w",
     "start": "node dist/index.js"
   },
   "dependencies": {

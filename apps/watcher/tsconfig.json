@@ -1,20 +1,14 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.settings.json",
   "compilerOptions": {
-    "composite": true,
     "module": "CommonJS",
-    "esModuleInterop": true,
     "target": "ES2020",
-    "noImplicitAny": true,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "strict": true,
-    "skipLibCheck": true,
     "outDir": "./dist",
+    "rootDir": "./src"
   },
   "references": [
     { "path": "../../packages/utility" },
-    { "path": "../../packages/resy" }
   ],
   "exclude": [
     "node_modules",

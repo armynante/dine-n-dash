@@ -1,17 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.settings.json",
   "compilerOptions": {
     "module": "ES2020",
     "moduleResolution": "Node",
     "target": "ES2019",
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "outDir": "./dist",
-    "rootDir": ".",
-    "composite": true,
+    "outDir": "./dist/",
+    "rootDir": "./src/",
   },
   "exclude": [
     "node_modules",

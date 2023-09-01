@@ -1,23 +1,12 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.settings.json",
   "compilerOptions": {
     "target": "es2022",
     "module": "commonjs",
     "moduleResolution": "node",
-    "declaration": true,
-    "strict": true,
-    "incremental": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": ".",
-    "composite": true
+    "rootDir": "./src",
   },
-    "references": [
-      { "path": "../../packages/utility" },
-      { "path": "../../packages/resy" }
-    ],
   "exclude": [
     "node_modules",
     "dist"

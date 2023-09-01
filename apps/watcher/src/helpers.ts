@@ -1,4 +1,4 @@
-import { ConfirmBookingResponse, SeatingResponse, Watcher } from 'diner-utilities/types';
+import { Types } from 'diner-utilities';
 import db from './db';
 import { ProxyAgent, TextMSG, Worker } from 'diner-utilities';
 import { ResyService } from 'diner-resy';
@@ -27,7 +27,7 @@ const agent = ProxyAgent({
 
 const Resy = new ResyService(agent, RESY_API_KEY);
 
-export const updateWatcherId = async (config: Watcher, jobId: string) => {
+export const updateWatcherId = async (config: Types.Watcher, jobId: string) => {
     const { data, error } = await db
         .client
         .from('worker')
@@ -69,10 +69,10 @@ export const updateWatcherId = async (config: Watcher, jobId: string) => {
         throw error;
     }
 
-    return data as Watcher;
+    return data as Types.Watcher;
 };
 
-export const resetFailures = async (config: Watcher) => {
+export const resetFailures = async (config: Types.Watcher) => {
     if (config.day) {
         const today  =  new Date(config.day) <= new Date();
         if (today) {
@@ -117,7 +117,7 @@ export const resetFailures = async (config: Watcher) => {
     }
 };
 
-export const markCompleteIfToday = async (config: Watcher) => {
+export const markCompleteIfToday = async (config: Types.Watcher) => {
     if (config.day) {
         const today  =  new Date(config.day) <= new Date();
         if (today) {
@@ -162,7 +162,7 @@ export const markCompleteIfToday = async (config: Watcher) => {
     }
 };
 
-export const seatingCheck = async (config: Watcher) => {
+export const seatingCheck = async (config: Types.Watcher) => {
     const seatings = await Resy.seatings(config);
 
     if (seatings.availibleSlots === 0) {
@@ -178,7 +178,7 @@ export const seatingCheck = async (config: Watcher) => {
     return seatings;
 };
 
-export const bookSeating = async (seatings: SeatingResponse, config: Watcher) => {
+export const bookSeating = async (seatings: Types.SeatingResponse, config: Types.Watcher) => {
     const slot = seatings.slots[0];
     const bookingRequest = await Resy.requestBooking({
         config_id: slot.bookingData.config_id,
@@ -187,7 +187,7 @@ export const bookSeating = async (seatings: SeatingResponse, config: Watcher) =>
         user: config.user,
     });
 
-    const {data:confirmed} : { data: ConfirmBookingResponse }= await Resy.confirmBooking(
+    const {data:confirmed} : { data: Types.ConfirmBookingResponse }= await Resy.confirmBooking(
         {
             book_token: bookingRequest.bookToken,
             user: config.user,
@@ -232,7 +232,7 @@ export const bookSeating = async (seatings: SeatingResponse, config: Watcher) =>
     }
 };
 
-export const updateWatcherWithErrors = async (config: Watcher, jobError:unknown) => {
+export const updateWatcherWithErrors = async (config: Types.Watcher, jobError:unknown) => {
     try {
         const update = { 
             jobError,

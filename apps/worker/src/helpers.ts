@@ -1,8 +1,8 @@
-import { SeatingResponse, Watcher } from 'diner-utilities/types';
+import { Types } from 'diner-utilities';
 import db from './db';
 import { Queue } from 'bull';
 
-export const markCompleteIfToday = async (config: Watcher) => {
+export const markCompleteIfToday = async (config: Types.Watcher) => {
     if (config.day) {
         const today  =  new Date(config.day) <= new Date();
         if (today) {
@@ -18,7 +18,7 @@ export const markCompleteIfToday = async (config: Watcher) => {
     }
 };
 
-export const seatingCheck = async (seatings:SeatingResponse, config: Watcher , watcherQueue:Queue<Watcher>) => {
+export const seatingCheck = async (seatings:Types.SeatingResponse, config: Types.Watcher , watcherQueue:Queue<Types.Watcher>) => {
     if (seatings.availibleSlots === 0) {
         console.log(`No slots found for ${config?.venue?.name} on ${config.day}`);
         config.tries = config.tries + 1;
@@ -35,7 +35,7 @@ export const seatingCheck = async (seatings:SeatingResponse, config: Watcher , w
     }
 };
 
-export const logRedisStatus = (watcherQueue:Queue<Watcher>) => {
+export const logRedisStatus = (watcherQueue:Queue<Types.Watcher>) => {
     watcherQueue.on('connected', () => {
         console.log('Queue connected to Redis');
     });

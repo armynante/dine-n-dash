@@ -10,7 +10,6 @@ const main = async () => {
     try {
         const parentDir = dirname('.');
 
-
         console.log(parentDir, parentDir);
 
         const lambdaClient = new LambdaClient({ region: 'us-east-1' });

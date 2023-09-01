@@ -1,21 +1,12 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.settings.json",
   "compilerOptions": {
     "module": "ESNext",
-    "esModuleInterop": true,
     "target": "ESNext",
-    "noImplicitAny": true,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "strict": true,
-    "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": ".",
+    "rootDir": "./src",
   },
-  "references": [
-    { "path": "../../packages/utility" },
-    { "path": "../../packages/resy" }
-  ],
   "exclude": [
     "node_modules",
     "dist"
