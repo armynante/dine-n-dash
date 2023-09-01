@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "es2022",
+    "moduleResolution": "Node",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "strict": true,
+    "outDir": "./dist",
+    "composite": true,
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+}

@@ -1,0 +1,20 @@
+{
+  "name": "diner-resy",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "axios": "^1.5.0",
+    "dayjs": "^1.11.9",
+    "form-data": "^4.0.0",
+    "lodash": "^4.17.21",
+    "diner-utilities": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.197"
+  }
+}

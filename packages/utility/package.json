@@ -1,0 +1,31 @@
+{
+  "name": "diner-utilities",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.398.0",
+    "@aws-sdk/client-sqs": "^3.398.0",
+    "@aws-sdk/types": "^3.398.0",
+    "@supabase/supabase-js": "^2.33.1",
+    "bull": "^4.11.3",
+    "express": "^4.18.2",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.1",
+    "keychain": "^1.5.0",
+    "npm": "^9.8.1",
+    "twilio": "^4.16.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/keychain": "^1.4.1"
+  }
+}

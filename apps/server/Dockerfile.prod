@@ -1,0 +1,32 @@
+# FROM node:16-bullseye-slim
+# COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.7.0 /lambda-adapter /opt/extensions/lambda-adapter
+# ENV PORT=4000
+
+FROM node:16-bullseye-slim
+RUN apt-get update && apt-get install -y python3 build-essential
+
+# Install pnpm and nodemon
+RUN npm install -g pnpm nodemon
+
+# Set the working directory
+WORKDIR /diner-mono
+
+# Copy pnpm workspace files
+COPY pnpm-workspace.yaml .
+COPY pnpm-lock.yaml .
+
+# Copy the server app's package.json and the packages folder
+COPY ./apps/server/package.json ./apps/server/
+COPY ./packages ./packages
+
+# Change to the server directory
+WORKDIR /diner-mono/apps/server
+
+# Install dependencies
+RUN pnpm i
+
+# Copy the rest of the server app
+COPY ./apps/server .
+
+# Use nodemon to run the server, watching the TypeScript files
+CMD ["node", "./dist/index.js"]

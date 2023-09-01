@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+  },
+  "references": [
+    { "path": "./apps/server" },
+    { "path": "./apps/cli"},
+    { "path": "./apps/worker"},
+    { "path": "./apps/controller"},
+    { "path": "./apps/watcher"},
+    { "path": "./packages/utility" },
+    { "path": "./packages/resy" },
+    { "path": "./tools/deploy" },
+  ]
+}
