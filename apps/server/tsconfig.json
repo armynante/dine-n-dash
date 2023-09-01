@@ -11,8 +11,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
+    "rootDir": ".",
     "composite": true
   },
+    "references": [
+      { "path": "../../packages/utility" },
+      { "path": "../../packages/resy" }
+    ],
   "exclude": [
     "node_modules",
     "dist"

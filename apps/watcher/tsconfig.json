@@ -12,6 +12,10 @@
     "skipLibCheck": true,
     "outDir": "./dist",
   },
+  "references": [
+    { "path": "../../packages/utility" },
+    { "path": "../../packages/resy" }
+  ],
   "exclude": [
     "node_modules",
     "dist"

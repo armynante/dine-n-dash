@@ -12,6 +12,10 @@
     "outDir": "./dist",
     "composite": true
   },
+  "references": [
+    { "path": "../../packages/utility" },
+    { "path": "../../packages/resy" }
+  ],
   "exclude": [
     "node_modules",
     "dist"

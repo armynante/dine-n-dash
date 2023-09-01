@@ -10,8 +10,12 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "./dist",
-    "composite": true
+    "rootDir": ".",
   },
+  "references": [
+    { "path": "../../packages/utility" },
+    { "path": "../../packages/resy" }
+  ],
   "exclude": [
     "node_modules",
     "dist"

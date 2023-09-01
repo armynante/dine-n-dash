@@ -10,13 +10,14 @@
     "skipLibCheck": true,
   },
   "references": [
+    { "path": "./packages/utility" },
+    { "path": "./packages/resy" },
     { "path": "./apps/server" },
     { "path": "./apps/cli"},
     { "path": "./apps/worker"},
     { "path": "./apps/controller"},
     { "path": "./apps/watcher"},
-    { "path": "./packages/utility" },
-    { "path": "./packages/resy" },
     { "path": "./tools/deploy" },
-  ]
+  ],
+  "exclude": ["**/node_modules"]
 }
