@@ -1,8 +1,8 @@
 import Queue from 'bull';
 import { ProxyAgent, TextMSG, Types } from 'diner-utilities';
-import db from './db';
+import db from './db.js';
 import { ResyService } from 'diner-resy';
-import { logRedisStatus, markCompleteIfToday, seatingCheck } from './helpers';
+import { logRedisStatus, markCompleteIfToday, seatingCheck } from './helpers.js';
 
 const RESY_API_KEY = process.env.RESY_API_KEY!;
 const RESERVATION_INTERVAL = process.env.RESERVATION_INTERVAL ? parseInt(process.env.RESERVATION_INTERVAL) : 1000 * 10; // 10 seconds

@@ -1,5 +1,5 @@
 import { Types } from 'diner-utilities';
-import db from './db';
+import db from './db.js';
 import { Queue } from 'bull';
 
 export const markCompleteIfToday = async (config: Types.Watcher) => {

@@ -15,7 +15,7 @@ RUN pnpm recursive install
 WORKDIR /diner-mono/apps/controller
 # Change to the server directory
 
-EXPOSE 8080
+EXPOSE 8000
 
 # Use nodemon to run the server, watching the TypeScript files
 CMD ["nodemon", "./dist/index.js"]

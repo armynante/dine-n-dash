@@ -8,11 +8,11 @@ services:
       - 4000:4000
     expose:
       - 4000
-    # depends_on:
-      # redis:
-        # condition: service_healthy
+    depends_on:
+      redis:
+        condition: service_healthy
     env_file:
-      - prod.env
+      - .env
     volumes:
       - ./apps/server:/diner-mono/apps/server
       - ./packages:/diner-mono/packages
@@ -22,56 +22,56 @@ services:
       context: .
       dockerfile: ./apps/controller/Dockerfile
     ports:
-      - 8080:8080
+      - 8000:8000
     expose:
-      - 8080
-    # depends_on:
-      # redis:
-        # condition: service_healthy
+      - 8000
+    depends_on:
+      redis:
+        condition: service_healthy
     env_file:
-      - prod.env
+      - .env
     volumes:
       - ./apps/controller:/diner-mono/apps/controller
       - ./packages:/diner-mono/packages
 
-  # worker:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/worker/Dockerfile
-  #   ports:
-  #     - 8000:8000
-  #   expose:
-  #     - 8000
-  #   # depends_on:
-  #     # redis:
-  #       # condition: service_healthy
-  #   env_file:
-  #     - prod.env
-  #   volumes:
-  #     - ./apps/worker:/diner-mono/apps/worker
-  #     - ./packages:/diner-mono/packages
+  worker:
+    build:
+      context: .
+      dockerfile: ./apps/worker/Dockerfile
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - prod.env
+    volumes:
+      - ./apps/worker:/diner-mono/apps/worker
+      - ./packages:/diner-mono/packages
 
-  # redis:
-  #   image: redis:6.2-alpine
-  #   restart: always
-  #   env_file:
-  #     - prod.env
-  #   ports:
-  #     - '6379:6379'
-  #   expose:
-  #     - '6379'
-  #   command: >
-  #     sh -c "
-  #       chown redis:redis /data &&
-  #       redis-server --save 20 1 --loglevel warning --dir /data
-  #     "
-  #   volumes:
-  #     - redis:/data
-  #   healthcheck:
-  #     test: ["CMD", "redis-cli", "ping"]
-  #     interval: 1s
-  #     timeout: 2s
-  #     retries: 10
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    env_file:
+      - prod.env
+    ports:
+      - '6379:6379'
+    expose:
+      - '6379'
+    command: >
+      sh -c "
+        chown redis:redis /data &&
+        redis-server --save 20 1 --loglevel warning --dir /data
+      "
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 2s
+      retries: 10
 
-# volumes:
-  # redis:
+volumes:
+  redis:
