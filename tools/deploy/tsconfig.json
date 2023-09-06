@@ -1,8 +1,9 @@
 {
   "extends": "../../tsconfig.settings.json",
   "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
     "outDir": "./dist",
     "rootDir": "./src",
     "composite": true,

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { AppConfig } from './types';
+import { AppConfig } from './types.js';
 import { exec } from 'child_process';
 import { LambdaClient, UpdateFunctionCodeCommand, UpdateFunctionConfigurationCommand, GetFunctionCommand } from '@aws-sdk/client-lambda';
 import ora from 'ora';
