@@ -6,7 +6,7 @@ import pkg from 'lodash';
 const { flatten, keys, times } = pkg;
 import { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
+import advancedFormat from 'dayjs/plugin/advancedFormat.js';
 dayjs.extend(advancedFormat);
 
 // Header required for resy api

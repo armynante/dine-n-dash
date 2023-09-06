@@ -2,10 +2,10 @@
 // @ts-nocheck
 import express, { Request, Response } from 'express';
 import serverless from 'serverless-http';
-import watcherRoutes from './routes/watcher';
-import authRoutes from './routes/auth';
-import resyRoutes from './routes/resy';
-import favoritesRoutes from './routes/favorites';
+import watcherRoutes from './routes/watcher.js';
+import authRoutes from './routes/auth.js';
+import resyRoutes from './routes/resy.js';
+import favoritesRoutes from './routes/favorites.js';
 
 /* 
  * ########################################

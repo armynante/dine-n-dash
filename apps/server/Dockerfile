@@ -1,30 +1,21 @@
 FROM node:16-bullseye-slim
+
 RUN apt-get update && apt-get install -y python3 build-essential
 
-# Install pnpm and nodemon
-RUN npm install -g pnpm nodemon typescript
+RUN npm install -g pnpm nodemon pm2 typescript
 
 # Set the working directory
 WORKDIR /diner-mono
 
-# Copy pnpm workspace files
-COPY pnpm-workspace.yaml .
-COPY pnpm-lock.yaml .
-COPY tsconfig.json .
+COPY . .
 
-# Copy the server app's package.json and the packages folder
-COPY ./apps/server/package.json ./apps/server/
-COPY ./packages ./packages
-
-# Change to the server directory
-WORKDIR /diner-mono/apps/server
-
+RUN pnpm tsc -b
 RUN pnpm recursive install
 
-RUN tsc
+WORKDIR /diner-mono/apps/server
+# Change to the server directory
 
-# Copy the rest of the server app
-COPY ./apps/server .
+EXPOSE 8080
 
 # Use nodemon to run the server, watching the TypeScript files
-CMD ["nodemon", "./dist/index.js", "--watch", "./dist", "--watch", "../../packages"]
+CMD ["nodemon", "./dist/index.js"]

@@ -160,6 +160,9 @@ importers:
       diner-utilities:
         specifier: workspace:*
         version: link:../../packages/utility
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
       express:
         specifier: ^4.18.2
         version: 4.18.2

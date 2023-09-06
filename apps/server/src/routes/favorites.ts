@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { Request, Response, Router } from 'express';
-import db from '../db';
+import db from '../db.js';
 import { verifyToken } from 'diner-utilities';
 
 const router = Router() as unknown as Router;

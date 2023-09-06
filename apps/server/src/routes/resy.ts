@@ -1,10 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { Request, Response, Router } from 'express';
-import db from '../db';
+import db from '../db.js';
 import { ResyService } from 'diner-resy';
 import { ProxyAgent, verifyToken } from 'diner-utilities';
-import { User } from 'diner-utilities/types';
 import jwt from 'jsonwebtoken';
 
 const secretKey = process.env.JWT_SECRET;

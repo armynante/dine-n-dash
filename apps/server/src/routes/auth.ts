@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { Router, Request, Response } from 'express';
-import db from '../db';
+import db from '../db.js';
 import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 

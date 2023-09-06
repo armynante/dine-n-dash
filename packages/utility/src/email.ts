@@ -1,5 +1,5 @@
 import { SESClient, SendEmailCommand, SendEmailCommandInput } from '@aws-sdk/client-ses';
-import { EmailMSG } from './types';
+import { EmailMSG } from './types.js';
 
 const sesClient = new SESClient({ region: 'us-east-1' });
 

@@ -1,6 +1,6 @@
 import axios, { AxiosProxyConfig } from 'axios';
 import FormData from 'form-data';
-import { formatHeader, formatParams, formatResyBookingResponse, formatVenues, parseResySeatingResponse } from './helpers';
+import { formatHeader, formatParams, formatResyBookingResponse, formatVenues, parseResySeatingResponse } from './helpers.js';
 const RESY_SEARCH_URL='https://api.resy.com/3/venuesearch/search';
 const RESY_BOOKING_URL='https://api.resy.com/3/book';
 const RESY_REQUEST_BOOKING_URL='https://api.resy.com/3/details';

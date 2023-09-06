@@ -1,5 +1,5 @@
-import { ResyService } from './service';
-import * as helpers from './helpers';
+import { ResyService } from './service.js';
+import * as helpers from './helpers.js';
 
 export {
     ResyService,

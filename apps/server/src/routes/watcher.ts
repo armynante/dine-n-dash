@@ -2,8 +2,7 @@
 // @ts-nocheck
 import { Request, Response, Router} from 'express';
 import { DevWorker, Worker, verifyToken } from 'diner-utilities';
-import db from '../db';
-import { User } from 'diner-utilities/types';
+import db from '../db.js';
 
 const router = Router() as Router;
 
@@ -20,8 +19,7 @@ if (process.env.NODE_ENV === 'development') {
     WatcherQueue = new DevWorker();
 } else {
     console.log('Using prod queue');
-    WatcherQueue = new Worker();
-    
+    WatcherQueue = new Worker();   
 }
 
 router.get('/testSQS', async (req: Request, res: Response) => {
