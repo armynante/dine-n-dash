@@ -112,7 +112,7 @@ export const buildCli = async (appName:string) => {
 export const runBuildScript = (app:string) => {
     return new Promise((resolve, reject) => {
         // exec(`webpack --config webpack.app.config.js --env app=apps/${app} && cd /apps/${app}/dist && zip -r ../${app}-lambda.zip .`, (error, stdout, stderr) => {
-        exec(`webpack --config webpack.app.config.js --env app=apps/${app} && cd ./apps/${app}/dist && zip -r ../${app}-lambda.zip .`, (error, stdout, stderr) => {
+        exec(`webpack --config webpack.app.config.js --env app=apps/${app} && cd ./apps/${app}/lambda && cp ../package.json . && zip -r ./${app}-lambda.zip .`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error}`);
                 reject(error);

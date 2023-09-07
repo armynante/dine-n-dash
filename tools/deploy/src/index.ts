@@ -17,8 +17,8 @@ const main = async () => {
         const apps = [
             {
                 name: 'server',
-                zipPath: resolve(parentDir, 'apps', 'server', 'server-lambda.zip'),
-                envPath: resolve(parentDir, 'apps', 'server', '.env'),
+                zipPath: resolve(parentDir, 'apps', 'server', './lambda/server-lambda.zip'),
+                envPath: resolve(parentDir, 'apps', 'server', 'prod.env'),
                 functionName: 'resy2Test',
             },
             {

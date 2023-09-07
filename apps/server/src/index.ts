@@ -6,6 +6,9 @@ import watcherRoutes from './routes/watcher.js';
 import authRoutes from './routes/auth.js';
 import resyRoutes from './routes/resy.js';
 import favoritesRoutes from './routes/favorites.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 /* 
  * ########################################
@@ -33,11 +36,17 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');
 });
 
+let handle;
+
 if (process.env.NODE_ENV === 'development') {    
+    console.log('::::DEV::: Server initialized');
     const port = process.env.SERVER_PORT || 4000;
     app.listen(port, () => {
         console.log(`Server listening on port ${port}`);
     });
 } else {
-    module.exports.handler = serverless(app);
+    console.log('::::PROD::: Server initialized');
+    handle = serverless(app);
 }
+
+export const handler = handle;

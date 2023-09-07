@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import path from 'path';
 import { fileURLToPath } from 'url';
+import webpack from 'webpack';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default (env, args) => ({
-    entry: path.resolve(__dirname, env.app, 'index.ts'), // Entry point
+    entry: path.resolve(__dirname, env.app, 'src/index.ts'), // Entry point
     target: 'node',
-    mode: 'production',
+    mode: 'none',
+    experiments: {
+        topLevelAwait: true,
+        outputModule: true,
+    },
     module: {
         rules: [
             {
@@ -19,11 +24,24 @@ export default (env, args) => ({
         ],
     },
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.js']
     },
+    plugins: [
+        new webpack.NormalModuleReplacementPlugin(/\.js$/, (resource) => {
+            if (resource.context.includes(path.join(env.app))) {
+                resource.request = resource.request.replace(/\.js$/, '.ts');
+            }
+        }),
+    ],
     output: {
-        filename: 'index.js',
-        path: path.resolve(__dirname, env.app, 'dist'),
-        libraryTarget: 'commonjs2',
+        filename: 'index.mjs',
+        path: path.resolve(__dirname, env.app, 'lambda'),
+        chunkFormat: 'array-push',
+        library: {
+            type: 'module',
+        },
+        environment: {
+            module: true,
+        }
     },
 });

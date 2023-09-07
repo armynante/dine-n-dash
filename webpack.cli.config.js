@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 
 export default (env, args) => ({
-    entry: path.resolve(__dirname, env.app, 'index.ts'), // Entry point
+    entry: path.resolve(__dirname, env.app, 'src/index.ts'), // Entry point
     target: 'node',
     mode: 'production',
     experiments: {
