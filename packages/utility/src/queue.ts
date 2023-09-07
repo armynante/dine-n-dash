@@ -97,7 +97,7 @@ export class DevWorker {
         return new Queue<Watcher>('watcherQueue', {
             redis: {
                 host: process.env.REDIS_HOST!,
-                port: 6379,
+                port: parseInt(process.env.REDIS_PORT!),
             },
         });
     }

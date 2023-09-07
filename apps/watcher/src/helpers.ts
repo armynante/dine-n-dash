@@ -1,17 +1,13 @@
-import { Types } from 'diner-utilities';
+import { DevWorker, Types } from 'diner-utilities';
 import db from './db';
 import { ProxyAgent, TextMSG, Worker } from 'diner-utilities';
 import { ResyService } from 'diner-resy';
-// import { SQSClient } from '@aws-sdk/client-sqs/dist-types/SQSClient';
-// import { Worker } from 'utility';
 
 const Text = new TextMSG(
     process.env.TWILIO_ACCOUNT_SID!,
     process.env.TWILIO_AUTH_TOKEN!,
     process.env.TWILIO_PHONE_NUMBER!,
 );
-
-const WatcherQueue = new Worker();
 
 const RESY_API_KEY = process.env.RESY_API_KEY!;
 
@@ -72,7 +68,7 @@ export const updateWatcherId = async (config: Types.Watcher, jobId: string) => {
     return data as Types.Watcher;
 };
 
-export const resetFailures = async (config: Types.Watcher) => {
+export const resetFailures = async (config: Types.Watcher, WatcherQueue:Worker | DevWorker) => {
     if (config.day) {
         const today  =  new Date(config.day) <= new Date();
         if (today) {
@@ -117,7 +113,7 @@ export const resetFailures = async (config: Types.Watcher) => {
     }
 };
 
-export const markCompleteIfToday = async (config: Types.Watcher) => {
+export const markCompleteIfToday = async (config: Types.Watcher, WatcherQueue:Worker | DevWorker) => {
     if (config.day) {
         const today  =  new Date(config.day) <= new Date();
         if (today) {
@@ -162,7 +158,7 @@ export const markCompleteIfToday = async (config: Types.Watcher) => {
     }
 };
 
-export const seatingCheck = async (config: Types.Watcher) => {
+export const seatingCheck = async (config: Types.Watcher, WatcherQueue:Worker | DevWorker) => {
     const seatings = await Resy.seatings(config);
 
     if (seatings.availibleSlots === 0) {
@@ -232,7 +228,7 @@ export const bookSeating = async (seatings: Types.SeatingResponse, config: Types
     }
 };
 
-export const updateWatcherWithErrors = async (config: Types.Watcher, jobError:unknown) => {
+export const updateWatcherWithErrors = async (config: Types.Watcher, jobError:unknown, WatcherQueue:Worker | DevWorker) => {
     try {
         const update = { 
             jobError,
