@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import ora from 'ora';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { AuthHelpers } from 'diner-utilities';
 
 const HOST = process.env.HOST || 'https://nxy3qkvysgdtkjefwu3vjggn5i0qjgsp.lambda-url.us-east-1.on.aws';
@@ -45,7 +45,8 @@ const auth = async () => {
 
     switch (options) {
     case 'new': {
-        const { email, password } = await inquirer.prompt([
+        const userSpinner = ora('Creating new user');
+        const { email, password, confirmPassword } = await inquirer.prompt([
             {
                 type: 'input',
                 name: 'email',
@@ -55,19 +56,29 @@ const auth = async () => {
                 type: 'password',
                 name: 'password',
                 message: 'What is your password?',
+            },
+            {
+                type: 'password',
+                name: 'confirmPassword',
+                message: 'Confirm your password',
             }
         ]);
         try {
-
-            const userSpinner = ora('Creating new user').start();
+            if (password !== confirmPassword) {
+                userSpinner.fail('Passwords do not match');
+                auth();
+            }
+            userSpinner.start();
             const { data: newUser } = await axios.post(`${HOST}/auth/register`, {
                 email,
                 password
             });
-            userSpinner.stop();
+            userSpinner.succeed('User created, please verify your email');
             console.log('New user created: ', newUser?.user?.email);
         } catch (err) {
-            console.log('Error creating new user');
+            const error = err as AxiosError<Error>;
+            userSpinner.fail(error.response?.data?.message);
+            auth();
         }
         break;
     }

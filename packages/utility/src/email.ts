@@ -1,55 +1,76 @@
 import { SESClient, SendEmailCommand, SendEmailCommandInput } from '@aws-sdk/client-ses';
 import { EmailMSG } from './types.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const sesClient = new SESClient({ region: 'us-east-1' });
+export class Email {
+    client: SESClient;
 
-
-const createMesage = ({ to, from, subject, body }:EmailMSG) => {
-    return {
-        Destination: {
-            ToAddresses: [to],
-        },
-        Message: {
-            Body: {
-                Text: { Data: body },
-            },
-            Subject: { Data: subject },
-        },
-        Source: from,
-    };
-};
-
-const send = async (params:SendEmailCommandInput) => {
-    try {
-        const data = await sesClient.send(new SendEmailCommand(params));
-        console.log('Email sent:', data);
-    } catch (error) {
-        console.error('Error:', error);
+    constructor() {
+        if (!process.env.EMAIL_FROM) {
+            throw new Error('EMAIL_FROM not found');
+        }
+        this.client = this.createClient();
     }
-};
 
-export const verify = async (to:string) => {
-    const params = createMesage({
-        to,
-        from: process.env.EMAIL_FROM!,
-        subject: 'Welcome to Resy Watcher',
-        body: `
-            Welcome to dine-n-dash. Please click the link below to verify your email address.
-            ${process.env.HOST}/auth/verify?email=${to}
-        `
-    });
-    await send(params);
-};
+    private createClient() {
+        return new SESClient({
+            region: 'us-east-1',
+            credentials: {
+                accessKeyId: process.env.ACCESS_KEY_ID!,
+                secretAccessKey: process.env.SECRET_ACCESS_KEY!,
+            },
+        });
+    }
 
-export const reset = async (to:string, token:string) => {
-    const params = createMesage({
-        to,
-        from: process.env.EMAIL_FROM!,
-        subject: 'Password reset',
-        body: `
-            Please click the link below to reset your password.
-            ${process.env.HOST}/auth/reset-password?token=${token}
-        `
-    });
-    await send(params);
-};
+    send = async (params:SendEmailCommandInput) => {
+        try {
+            const data = await this.client.send(new SendEmailCommand(params));
+            console.log('Email sent:', data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    verify = async (to:string, token:string) => {
+        const params = this.createMesage({
+            to,
+            from: process.env.EMAIL_FROM!,
+            subject: 'Welcome to Resy Watcher',
+            body: `
+                Welcome to dine-n-dash. Please click the link below to verify your email address.
+                ${process.env.HOST}/auth/verify?email=${to}&token=${token}
+            `
+        });
+        await this.send(params);
+    };
+
+    reset = async (to:string, token:string) => {
+        const params = this.createMesage({
+            to,
+            from: process.env.EMAIL_FROM!,
+            subject: 'Password reset',
+            body: `
+                Please click the link below to reset your password.
+                ${process.env.HOST}/auth/reset-password?token=${token}
+            `
+        });
+        await this.send(params);
+    };
+
+    createMesage = ({ to, from, subject, body }:EmailMSG) => {
+        return {
+            Destination: {
+                ToAddresses: [to],
+            },
+            Message: {
+                Body: {
+                    Text: { Data: body },
+                },
+                Subject: { Data: subject },
+            },
+            Source: from,
+        };
+    };
+
+}
