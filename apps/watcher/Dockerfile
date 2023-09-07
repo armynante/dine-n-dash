@@ -12,8 +12,8 @@ COPY . .
 RUN pnpm tsc -b
 RUN pnpm recursive install
 
-WORKDIR /diner-mono/apps/worker
+WORKDIR /diner-mono/apps/watcher
 # Change to the server directory
 
 # Use nodemon to run the server, watching the TypeScript files
-# CMD ["nodemon", "./dist/index.js"]
+CMD ["nodemon", "./dist/index.js"]

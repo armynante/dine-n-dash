@@ -4,11 +4,13 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import DatePrompt from 'inquirer-date-prompt';
+import dotenv from 'dotenv';
 import { AuthHelpers, TimeHelpers, Types } from 'diner-utilities';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 inquirer.registerPrompt('date', DatePrompt);
 
+dotenv.config();
 
 const HOST = process.env.HOST || 'https://nxy3qkvysgdtkjefwu3vjggn5i0qjgsp.lambda-url.us-east-1.on.aws';
 

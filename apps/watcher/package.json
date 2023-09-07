@@ -2,7 +2,7 @@
   "name": "diner-watcher",
   "version": "0.0.0",
   "main": "dist/index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "tsc -b --watch",
@@ -11,8 +11,9 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.398.0",
     "aws-lambda": "^1.0.7",
+    "diner-resy": "workspace:*",
     "diner-utilities": "workspace:*",
-    "diner-resy": "workspace:*"
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119"

@@ -1,5 +1,5 @@
 import { DevWorker, Types } from 'diner-utilities';
-import db from './db';
+import db from './db.js';
 import { ProxyAgent, TextMSG, Worker } from 'diner-utilities';
 import { ResyService } from 'diner-resy';
 
@@ -8,7 +8,6 @@ const Text = new TextMSG(
     process.env.TWILIO_AUTH_TOKEN!,
     process.env.TWILIO_PHONE_NUMBER!,
 );
-
 const RESY_API_KEY = process.env.RESY_API_KEY!;
 
 // const RESY_API_KEY = 'ResyAPI api_key="AIcdK2rLXG6TYwJseSbmrBAy3RP81ocd"';
@@ -23,7 +22,7 @@ const agent = ProxyAgent({
 
 const Resy = new ResyService(agent, RESY_API_KEY);
 
-export const updateWatcherId = async (config: Types.Watcher, jobId: string) => {
+export const updateWatcherId = async (config: Types.Watcher, jobId: string | number) => {
     const { data, error } = await db
         .client
         .from('worker')
@@ -232,8 +231,8 @@ export const updateWatcherWithErrors = async (config: Types.Watcher, jobError:un
     try {
         const update = { 
             jobError,
-            failed: config.failed += 1,
-            complete: config.failed >= 5 ? true : false,
+            failed: config.failed ? config.failed += 1 : 1,
+            complete: config.failed ? config.failed >= 5 : false,
         };
         const { error } = await db
             .client

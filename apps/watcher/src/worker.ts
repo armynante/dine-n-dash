@@ -1,12 +1,13 @@
 import { bookSeating, markCompleteIfToday, resetFailures, seatingCheck, updateWatcherId, updateWatcherWithErrors } from './helpers.js';
 import { DevWorker, Types, Worker } from 'diner-utilities';
 
-export const runWorker = async (watcherConfig: Types.Watcher, jobID:string, WatcherQueue:Worker | DevWorker): Promise<void> => {
+export const runWorker = async (watcherConfig: Types.Watcher, jobID:string | number, WatcherQueue: Worker | DevWorker): Promise<void> => {
     try {
-        console.log('Watcher running for', watcherConfig?.venue?.name, WatcherQueue);
+        console.log('Watcher running for', watcherConfig?.venue?.name);
     
         // Add the AWS SQS receipt handle to the watcher config
-        const watcher = await updateWatcherId(watcherConfig, jobID,);
+        console.log('Updating watcher with job id:', jobID);
+        const watcher = await updateWatcherId(watcherConfig, jobID);
         console.log('Watcher updated with job id');
 
         // kill the job if it's past the start date

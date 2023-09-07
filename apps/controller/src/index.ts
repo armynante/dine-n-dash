@@ -1,15 +1,19 @@
 import express, { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { Worker, verifyToken } from 'diner-utilities';
+import { DevWorker, Worker, verifyToken } from 'diner-utilities';
 import cron from 'node-cron';
 import db from './db.js';
-
-
 
 const app = express();
 app.use(express.json());
 
-const WatcherQueue = new Worker();
+let WatcherQueue:Worker | DevWorker;
+
+if (process.env.NODE_ENV === 'development') {
+    WatcherQueue = new DevWorker();
+} else {
+    WatcherQueue = new Worker();
+}
 
 let task:cron.ScheduledTask;
 let CRON_STATUS = 'stopped 🛑';

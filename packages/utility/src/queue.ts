@@ -54,6 +54,7 @@ export class Worker {
     }
     
     async sendBatch(payloads: WatcherMessage[]) {
+        console.log('Sending PROD batch');
         const entries = payloads.map((payload) => {
             return {
                 Id: payload.id,
@@ -86,7 +87,7 @@ export class Worker {
 
 export class DevWorker {
 
-    queue: Queue.Queue<Watcher | Record<string,unknown>>;
+    queue: Queue.Queue;
 
     constructor() {
         this.queue = this.createQueue();
@@ -104,6 +105,8 @@ export class DevWorker {
 
     async clear() {
         await this.queue.empty();
+        const queueLength = await this.queue.count();
+        console.log('Queue length:', queueLength);
     }
 
     async test(message:Record<string,unknown>) {
@@ -112,6 +115,21 @@ export class DevWorker {
 
     async add(payload: Watcher) {
         await this.queue.add(payload);
+        const queueLength = await this.queue.count();
+        console.log('Queue length:', queueLength);
+    }
+
+    async sendBatch(payloads: Watcher[]) {
+        console.log('Sending DEV batch');
+        console.log(payloads.length);
+        const jobs = payloads.map((payload) => {
+            return {
+                data: payload,
+            };
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        await this.queue.addBulk(jobs);
     }
 
     async deleteJob(jobId: string) {

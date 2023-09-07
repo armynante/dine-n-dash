@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import searchResy from './searchResy';
-import watcherQueue from './watcherQueue';
-import auth from './auth';
-import favorites from './favorites';
+import searchResy from './searchResy.js';
+import watcherQueue from './watcherQueue.js';
+import auth from './auth.js';
+import favorites from './favorites.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 program
     .version('0.0.1')

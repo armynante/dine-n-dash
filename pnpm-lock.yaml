@@ -197,6 +197,9 @@ importers:
       diner-utilities:
         specifier: workspace:*
         version: link:../../packages/utility
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
     devDependencies:
       '@types/aws-lambda':
         specifier: ^8.10.119

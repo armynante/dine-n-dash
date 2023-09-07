@@ -34,10 +34,10 @@ services:
       - ./apps/controller:/diner-mono/apps/controller
       - ./packages:/diner-mono/packages
 
-  worker:
+  watcher:
     build:
       context: .
-      dockerfile: ./apps/worker/Dockerfile
+      dockerfile: ./apps/watcher/Dockerfile
     ports:
       - 8080:8080
     expose:
@@ -46,9 +46,9 @@ services:
       redis:
         condition: service_healthy
     env_file:
-      - prod.env
+      - .env
     volumes:
-      - ./apps/worker:/diner-mono/apps/worker
+      - ./apps/watcher:/diner-mono/apps/watcher
       - ./packages:/diner-mono/packages
 
   redis:
