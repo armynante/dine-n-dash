@@ -205,11 +205,10 @@ router.post('/login', async (req: Request, res: Response) => {
             .eq('email', email)
             .single();
             
-        console.log('Password :', req.body);
         if (!user) {
             return res
                 .status(401)
-                .json({ message: 'Invalid username or password' });
+                .json({ message: 'No user found' });
         }
         // Compare the provided password with the stored hashed password
         const passwordMatch = await bcrypt.compare(password, user.password);

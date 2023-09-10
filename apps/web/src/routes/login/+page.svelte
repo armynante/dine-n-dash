@@ -1,15 +1,14 @@
-<script>
+<script lang="ts">
   let email = "";
   let password = "";
   let error = "";
   let loading = false;
   let resp = {};
+  let successMessage = "";
   
   async function handleSubmit() {    
-    alert(email)
     const response = await fetch("http://localhost:4000/auth/login", {
       method: "POST",
-      mode: "no-cors",
       headers: {
         "Content-Type": "application/json"
       },
@@ -19,8 +18,15 @@
     if (response.ok) {
       const data = await response.json();
       resp = data;
+      successMessage = data.message;
+      error = "";
+      await setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
     } else {
-      console.error("Login failed");
+      // parse error in response body
+      const { message } = await response.json();
+      error = message;
     }
   }
 </script>
@@ -40,7 +46,7 @@
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <form class="space-y-6" on:submit|preventDefault={handleSubmit}>
       <div>
-        <label htmlFor="email" class="block text-sm font-medium leading-6 text-gray-900">
+        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">
           Email address
         </label>
         <div class="mt-2">
@@ -58,7 +64,7 @@
 
       <div>
         <div class="flex items-center justify-between">
-          <label htmlFor="password" class="block text-sm font-medium leading-6 text-gray-900">
+          <label for="password" class="block text-sm font-medium leading-6 text-gray-900">
             Password
           </label>
           <div class="text-sm">
@@ -97,7 +103,12 @@
       </a>
     </p>
     <p class="mt-10 text-center text-sm text-gray-500">
-      {JSON.stringify(resp)}
+      {#if error}
+        <p class="text-red-500">{error}</p>
+      {/if}
+      {#if successMessage}
+        <p class="text-green-500">{successMessage}</p>
+      {/if}
     </p>
   </div>
 </div>
