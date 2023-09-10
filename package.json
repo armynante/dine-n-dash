@@ -4,7 +4,6 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "pnpm -r run dev",
     "lint": "eslint",
     "build:controller": "docker build -t diner-controller -f ./apps/controller/Dockerfile . ",
     "deploy": "node ./tools/deploy/dist/index.js",

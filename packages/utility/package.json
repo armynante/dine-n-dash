@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
-    "@types/keychain": "^1.4.1"
+    "@types/keychain": "^1.4.1",
+    "@types/node": "^20.5.7"
   }
 }

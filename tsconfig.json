@@ -5,7 +5,6 @@
     { "path": "./packages/resy/tsconfig.json" },
     { "path": "./apps/server/tsconfig.json" },
     { "path": "./apps/cli/tsconfig.json"},
-    { "path": "./apps/worker/tsconfig.json"},
     { "path": "./apps/controller/tsconfig.json"},
     { "path": "./apps/watcher/tsconfig.json"},
     { "path": "./tools/deploy/tsconfig.json" },

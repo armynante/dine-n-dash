@@ -30,10 +30,8 @@ const auth = async () => {
                     value: 'logout'
                 },
                 {
-                    name: 'Change password',
-                },
-                {
-                    name: 'Change email',
+                    name: 'Reset password',
+                    value: 'changePassword'
                 },
                 {
                     name: 'Exit',
@@ -139,13 +137,11 @@ const auth = async () => {
                 email: loginEmail,
                 password: loginPassword
             });
-            spinner.stop();
-            console.log('Logged in as', resp?.user?.email);       
             await AuthHelpers.setToken(resp?.token);
-            console.log('Token saved');
+            console.log('Logged in as', resp?.user?.email);       
+            spinner.succeed(`Logged in as ${resp?.user?.email}`);
         } catch (err) {
-            spinner.stop();
-            console.log('Error logging in');
+            spinner.fail('Error logging in');
             console.log(err);
             return;
         }
@@ -158,8 +154,46 @@ const auth = async () => {
         const logoutSpinner = ora('Logging out').start();
         await AuthHelpers.deleteToken();
         
-        logoutSpinner.stop();
-        console.log('logout successful');
+        logoutSpinner.succeed('Logout successful');
+        break;
+    }
+
+    case 'changePassword': {
+        const token = await AuthHelpers.getToken() as string;
+        console.log(token);
+        const { resetPassword } = await inquirer.prompt([
+            {
+                type: 'confirm',
+                name: 'resetPassword',
+                message: 'Are you sure you want to reset your password?',
+            }
+        ]);
+
+        const resetSpinner = ora('Sending password reset email');
+
+        if (!resetPassword) {
+            console.log('Aborted');
+            auth();
+            return;
+        }
+
+        // Need to reset AuthTOkern when user is logged in
+
+        try {
+
+            await axios.post(`${HOST}/auth/reset-password`, {}, {
+                headers: {
+                    Authorization: token
+                }
+            }
+            );
+            resetSpinner.succeed('Email sent');
+        } catch (err) {
+            console.log('Error sending password reset email');
+            const error = err as AxiosError<Error>;
+            resetSpinner.fail(error.response?.data?.message);
+            resetSpinner.stop();
+        }
         break;
     }
     default:

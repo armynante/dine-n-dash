@@ -2,7 +2,7 @@ import db from '../db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Router, Request, Response } from 'express';
-import { Email } from 'diner-utilities';
+import { Email, verifyToken } from 'diner-utilities';
 
 const secretKey = process.env.JWT_SECRET;
 
@@ -98,6 +98,99 @@ router.get('/verify', async (req: Request, res: Response) => {
 });
 
 
+router.post('/reset-password', verifyToken, async (req: Request, res: Response) => {
+    const { token } = req;
+
+    console.log('Resetting password');
+    const email = token?.email;
+
+    try {
+        const { data: user, error } = await db
+            .client
+            .from('user')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        if (!user?.email) {
+            throw new Error('No email found');
+        }
+
+        const token = jwt.sign({ user }, secretKey, { expiresIn: '1d' });
+        
+        await db
+            .client
+            .from('user')
+            .update({
+                resetToken: token,
+            })
+            .eq('email', email);
+        
+        await EmailClient.reset(user.email, token);
+        
+        res.json({ message: 'Password reset email sent' });
+    } catch (error) {
+        console.error(error);
+        const err = error as Error;
+        res.status(500).json({
+            message: err.message || 'An error occurred while processing the password reset request',
+        });
+    }
+});
+
+router.post('/reset-password/verify', async (req: Request, res: Response) => {
+    const { email, token, password } = req.body;
+
+    console.log('Verifying password reset');
+
+    try {
+        const { data: user, error } = await db
+            .client
+            .from('user')
+            .select('*')
+            .eq('email', email)
+            .single();
+            
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (user.resetToken !== token) {
+            throw new Error('Invalid token');
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        await db
+            .client
+            .from('user')
+            .update({
+                password: hashedPassword,
+                resetToken: null,
+            })
+            .eq('email', email);
+
+        res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        console.error(error);
+        const err = error as Error;
+        res.status(500).json({
+            message: err.message || 'An error occurred while processing the password reset request',
+        });
+    }
+});
+
+
+
 router.post('/login', async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
@@ -111,7 +204,8 @@ router.post('/login', async (req: Request, res: Response) => {
             .select()
             .eq('email', email)
             .single();
-
+            
+        console.log('Password :', req.body);
         if (!user) {
             return res
                 .status(401)

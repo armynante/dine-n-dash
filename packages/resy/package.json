@@ -10,11 +10,12 @@
   "dependencies": {
     "axios": "^1.5.0",
     "dayjs": "^1.11.9",
+    "diner-utilities": "workspace:*",
     "form-data": "^4.0.0",
-    "lodash": "^4.17.21",
-    "diner-utilities": "workspace:*"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.197"
+    "@types/lodash": "^4.14.197",
+    "@types/node": "^20.5.7"
   }
 }

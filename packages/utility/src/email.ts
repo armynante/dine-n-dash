@@ -33,7 +33,7 @@ export class Email {
     };
 
     verify = async (to:string, token:string) => {
-        const params = this.createMesage({
+        const params = this.createMessage({
             to,
             from: process.env.EMAIL_FROM!,
             subject: 'Welcome to Resy Watcher',
@@ -46,7 +46,7 @@ export class Email {
     };
 
     reset = async (to:string, token:string) => {
-        const params = this.createMesage({
+        const params = this.createMessage({
             to,
             from: process.env.EMAIL_FROM!,
             subject: 'Password reset',
@@ -58,7 +58,7 @@ export class Email {
         await this.send(params);
     };
 
-    createMesage = ({ to, from, subject, body }:EmailMSG) => {
+    createMessage = ({ to, from, subject, body }:EmailMSG) => {
         return {
             Destination: {
                 ToAddresses: [to],
