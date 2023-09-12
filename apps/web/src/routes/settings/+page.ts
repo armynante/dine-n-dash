@@ -1,8 +1,8 @@
 export const ssr = false
-const HOST = process.env.HOST;
+import { PUBLIC_HOST } from '$env/static/public'
 export const load = async ({ fetch }) => {
   const token = localStorage.getItem('jwt') || '';
-  const res = await fetch(`${HOST}/users`, {
+  const res = await fetch(`${PUBLIC_HOST}/users`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

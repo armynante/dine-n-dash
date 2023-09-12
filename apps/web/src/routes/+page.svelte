@@ -19,7 +19,7 @@
 </p>
 
 <div class="mt-6">
-  <a href="#" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-amber-400 hover:bg-amber-700">
+  <a href="/register" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-amber-400 hover:bg-amber-700">
     Sign up
   </a>
   <a href="/login" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700">
