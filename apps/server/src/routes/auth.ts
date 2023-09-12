@@ -43,7 +43,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
         // send email 
         await EmailClient.verify(email, verifyToken);
-        res.json({ message: 'User registered successfully', user });
+        res.json({ message: 'Success. Check your email to verify the account', user });
     } catch (error) {
         console.error(error);
         const err = error as Error;

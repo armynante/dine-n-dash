@@ -49,10 +49,12 @@ router.post('/login', verifyToken, async (req: Request, res: Response) => {
         console.log('User updated');
         const token = jwt.sign(updatedUser, secretKey, { expiresIn: '365d' });
 
-        res.status(200).send(token);
+        res.status(200).send({token, user: updatedUser});
     } catch (error) {
         console.error(error);
-        res.status(500).send(error);
+        res.status(500).send({
+            message: error.message || 'An error occurred while processing the login request',
+        });
     }
 });
 
