@@ -43,6 +43,7 @@ router.put('/', verifyToken, async (req, res) => {
             throw error;
         }
 
+        
         res.status(200).json({
             message: 'User updated successfully',
             user: {
