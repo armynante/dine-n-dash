@@ -1,8 +1,8 @@
 export const ssr = false
-
+const HOST = process.env.HOST;
 export const load = async ({ fetch }) => {
   const token = localStorage.getItem('jwt') || '';
-  const res = await fetch('http://localhost:4000/users', {
+  const res = await fetch(`${HOST}/users`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

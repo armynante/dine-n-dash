@@ -1,13 +1,15 @@
 <script lang="ts">
+  import { PUBLIC_HOST } from '$env/static/public'
   let email = "";
   let password = "";
   let error = "";
   let loading = false;
   let resp = {};
   let successMessage = "";
+
   
   async function handleSubmit() {    
-    const response = await fetch("http://localhost:4000/auth/login", {
+    const response = await fetch(`${PUBLIC_HOST}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

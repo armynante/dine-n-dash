@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_HOST } from '$env/static/public'
   export let data;
   let loading = false;
   let error = "";
@@ -12,7 +13,7 @@
   async function handleSave() {
     loading = true; 
     error = "";
-    const resp = await fetch("http://localhost:4000/auth/register", {
+    const resp = await fetch(`${PUBLIC_HOST}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

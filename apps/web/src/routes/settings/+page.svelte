@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_HOST } from '$env/static/public'
   import { onMount } from "svelte";
   let jwt:string | null= "";
   export let data;
@@ -16,7 +17,7 @@
 
   async function handleResyAuth() {   
     resyLoading = true;
-    const response = await fetch("http://localhost:4000/resy/login", {
+    const response = await fetch(`${PUBLIC_HOST}/resy/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +45,7 @@
   async function handleSave() {
     loading = true; 
     saved = false;
-    const response = await fetch("http://localhost:4000/users", {
+    const response = await fetch(`${PUBLIC_HOST}/users`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
