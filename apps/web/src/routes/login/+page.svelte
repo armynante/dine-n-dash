@@ -20,9 +20,8 @@
       resp = data;
       successMessage = data.message;
       error = "";
-      await setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
+      localStorage.setItem("jwt", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
     } else {
       // parse error in response body
       const { message } = await response.json();

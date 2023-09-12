@@ -1,12 +1,14 @@
 export const login = async (email:string,password:string) => {
   try {
-    const response = await fetch("http://localhost:4000/auth/login", {
+    const response = await fetch("https://api.dine--dash.com/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({email, password})
     });
+
+    console.log(response);
   
     const data = await response.json();
 
@@ -17,7 +19,7 @@ export const login = async (email:string,password:string) => {
     }
     
     // If there was an error, return an invalid response
-    return { success: true, user: data.user };
+    return JSON.stringify({ success: true, user: data });
   
   } catch (error) {
     console.error("error");

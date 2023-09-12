@@ -16,13 +16,13 @@
             <a href="/login" class="font-medium text-gray-500 hover:text-gray-900">
               Login
             </a>
-            <a href="#" class="font-medium text-gray-500 hover:text-gray-900">
+            <a href="/register" class="font-medium text-gray-500 hover:text-gray-900">
               Register
             </a>
-            <a href="#" class="font-medium text-gray-500 hover:text-gray-900">
-              Features
+            <a href="/settings" class="font-medium text-gray-500 hover:text-gray-900">
+              Settings
             </a>
-            <a href="#" class="font-medium text-gray-500 hover:text-gray-900">
+            <a href="/" class="font-medium text-gray-500 hover:text-gray-900">
               Docs
             </a>
           </div>
