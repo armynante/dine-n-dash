@@ -5,6 +5,7 @@ import serverless from 'serverless-http';
 import watcherRoutes from './routes/watcher.js';
 import authRoutes from './routes/auth.js';
 import resyRoutes from './routes/resy.js';
+import userRoutes from './routes/user.js';
 import favoritesRoutes from './routes/favorites.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -12,9 +13,8 @@ dotenv.config();
 
 // Set up middleware
 const corsOptions = {
-    origin: 'http://localhost:5173',  // replace with your frontend app's URL
+    origin: '*',
     optionsSuccessStatus: 204,
-    credentials: true,
 };
 
 /* 
@@ -30,19 +30,26 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 /* 
- * ########################################
- * #######     SERVER ROUTES         ######
- * ########################################
- */
+* ########################################
+* #######     SERVER ROUTES         ######
+* ########################################
+*/
 
 app.use('/watch', watcherRoutes);
 app.use('/auth', authRoutes);
 app.use('/resy', resyRoutes);
 app.use('/favorites', favoritesRoutes);
+app.use('/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!');
-});
+    res.json(
+        {
+            message: 'Hello from the Dine & Dash API',
+            data: {
+                version: '1.0.0',
+            },
+        },
+    );});
 
 let handle;
 
