@@ -118,6 +118,7 @@ export class DevWorker {
         const queueLength = await this.queue.count();
         console.log('Queue length:', queueLength);
     }
+    
 
     async sendBatch(payloads: Watcher[]) {
         console.log('Sending DEV batch');

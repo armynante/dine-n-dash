@@ -6,6 +6,7 @@ import auth from './auth.js';
 import favorites from './favorites.js';
 import dotenv from 'dotenv';
 
+
 dotenv.config();
 
 program
