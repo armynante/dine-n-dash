@@ -8,48 +8,48 @@ services:
       - 4000:4000
     expose:
       - 4000
-    depends_on:
-      redis:
-        condition: service_healthy
+    # depends_on:
+    #   redis:
+    #     condition: service_healthy
     env_file:
       - .env
     volumes:
       - ./apps/server:/diner-mono/apps/server
       - ./packages:/diner-mono/packages
 
-  controller:
-    build:
-      context: .
-      dockerfile: ./apps/controller/Dockerfile
-    ports:
-      - 8000:8000
-    expose:
-      - 8000
-    depends_on:
-      redis:
-        condition: service_healthy
-    env_file:
-      - .env
-    volumes:
-      - ./apps/controller:/diner-mono/apps/controller
-      - ./packages:/diner-mono/packages
+  # controller:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/controller/Dockerfile
+  #   ports:
+  #     - 8000:8000
+  #   expose:
+  #     - 8000
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./apps/controller:/diner-mono/apps/controller
+  #     - ./packages:/diner-mono/packages
 
-  watcher:
-    build:
-      context: .
-      dockerfile: ./apps/watcher/Dockerfile
-    ports:
-      - 8080:8080
-    expose:
-      - 8080
-    depends_on:
-      redis:
-        condition: service_healthy
-    env_file:
-      - .env
-    volumes:
-      - ./apps/watcher:/diner-mono/apps/watcher
-      - ./packages:/diner-mono/packages
+  # watcher:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/watcher/Dockerfile
+  #   ports:
+  #     - 8080:8080
+  #   expose:
+  #     - 8080
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./apps/watcher:/diner-mono/apps/watcher
+  #     - ./packages:/diner-mono/packages
 
   web:
     build:
@@ -57,9 +57,9 @@ services:
       dockerfile: ./apps/web/Dockerfile
     restart: on-failure
     ports:
-      - 3000:3000
-      - 24678:24678
-      - 5173:5173
+      - 4321:4321
+    env_file:
+      - .env
     tty: true
     stdin_open: true
     volumes:
@@ -70,27 +70,27 @@ services:
       # - ./apps/web/tsconfig.json:/diner-mono/tsconfig.json
       # - ./apps/web/svelte.config.js:/diner-mono/svelte.config.js
 
-  redis:
-    image: redis:6.2-alpine
-    restart: always
-    env_file:
-      - prod.env
-    ports:
-      - '6379:6379'
-    expose:
-      - '6379'
-    command: >
-      sh -c "
-        chown redis:redis /data &&
-        redis-server --save 20 1 --loglevel warning --dir /data
-      "
-    volumes:
-      - redis:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 1s
-      timeout: 2s
-      retries: 10
+  # redis:
+  #   image: redis:6.2-alpine
+  #   restart: always
+  #   env_file:
+  #     - prod.env
+  #   ports:
+  #     - '6379:6379'
+  #   expose:
+  #     - '6379'
+  #   command: >
+  #     sh -c "
+  #       chown redis:redis /data &&
+  #       redis-server --save 20 1 --loglevel warning --dir /data
+  #     "
+  #   volumes:
+  #     - redis:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 1s
+  #     timeout: 2s
+  #     retries: 10
 
-volumes:
-  redis:
+# volumes:
+#   redis:
