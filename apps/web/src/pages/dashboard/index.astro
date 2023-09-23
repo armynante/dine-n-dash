@@ -1,10 +1,7 @@
 ---
 import DashLayout from '../../layouts/DashLayout.astro';
-import Card from '../../components/Card.astro';
-import RestaurantSearch from './RestaurantSearch.astro';
 import Favorites from './favorites.astro';
-import Watchers from './Watchers.astro';
-import ErrorModal from '../../components/modals/Error.astro';
+import Watchers from './watchers.astro';
 
 const cookie = Astro.cookies.get('token');
 if (!cookie) {
