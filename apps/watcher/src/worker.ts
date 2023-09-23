@@ -14,9 +14,14 @@ export const runWorker = async (watcherConfig: Types.Watcher, jobID:string | num
         await markCompleteIfToday(watcher, WatcherQueue);
 
         // check for seatings
+        console.log('Checking for seatings');
+
         const seatings = await seatingCheck(watcher, WatcherQueue);
         await resetFailures(watcher, WatcherQueue);
+        console.log('Seatings:');
+        console.log(seatings);
         if (!seatings) return;
+
 
         // Book the first slot
         await bookSeating(seatings, watcher);

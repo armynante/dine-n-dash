@@ -9,6 +9,7 @@ import { AuthHelpers, Types } from 'diner-utilities';
 const HOST = process.env.HOST || 'https://nxy3qkvysgdtkjefwu3vjggn5i0qjgsp.lambda-url.us-east-1.on.aws';
 const CONTROLLER_HOST = process.env.CONTROLLER_HOST || 'http://ec2-52-202-82-154.compute-1.amazonaws.com';
 
+console.info('Controller host', CONTROLLER_HOST);
 
 const clearWatch = async () => {
     const token = await AuthHelpers.getToken() as string;
@@ -32,7 +33,7 @@ const clearWatch = async () => {
   
     const spinner = ora('Clearing watch list 🔍').start();
     const { data:response} = await axios
-        .delete(`${HOST}/watch/clear`,
+        .delete(`${HOST}/watchers/clear`,
             {
                 headers: {
                     Authorization: token
@@ -51,7 +52,7 @@ const removeWatch = async (watcher:Types.Watcher) => {
         console.log('Please login first');
         return;
     }
-    await axios.delete(`${HOST}/watch/${watcher.id}`,
+    await axios.delete(`${HOST}/watchers/${watcher.id}`,
         {
             headers: {
                 Authorization: token
@@ -245,15 +246,15 @@ const listWatch = async () => {
     }
     const spinner = ora('Fetching watch list 🔍').start();
     const { data:watchList } = await axios
-        .get(`${HOST}/watch/list`,
+        .get(`${HOST}/watchers`,
             {
                 headers: {
                     Authorization: token
                 }
             });
-    spinner.stop();
+    spinner.succeed(watchList.message);
 
-    if (!watchList.length) {
+    if (!watchList.data.length) {
         console.log('No watch list found');
         return;
     }
@@ -263,7 +264,7 @@ const listWatch = async () => {
             type: 'list',
             name: 'option',
             message: 'Select the option to continue',
-            choices: watchList.map((watcher:Types.Watcher, iDx:number) => {
+            choices: watchList.data.map((watcher:Types.Watcher, iDx:number) => {
                 return {
                     name: `${iDx + 1}. ${watcher?.venue?.name} @ ${new Date(watcher?.day).toDateString()} for ${watcher?.partySize} people`,
                     value: watcher

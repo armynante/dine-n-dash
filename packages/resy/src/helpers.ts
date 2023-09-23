@@ -42,8 +42,9 @@ export function formatParams (request: Types.SeatingQuery) : Types.ResyReservati
         long: 0, // required
         party_size: partySize,
         // @ts-ignore
-        venue_id: venue.id
+        venue_id: venue.siteId,
     };
+    console.log('formatParams', params);
     return params;
 }
 

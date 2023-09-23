@@ -15,12 +15,14 @@ declare global {
 // Middleware to verify JWT token
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
     const secretKey = process.env.JWT_SECRET;
+    
 
     if (!secretKey) {
         throw new Error('Missing JWT_SECRET environment variable');
     }
     const headers = req.headers as IncomingHttpHeaders;
     const token = headers.authorization;
+  
 
     if (!token) {
         return res.status(401).json({ message: 'Token not provided' });

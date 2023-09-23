@@ -29,27 +29,10 @@ export const updateWatcherId = async (config: Types.Watcher, jobId: string | num
         .update({ jobId, tries: config.tries += 1 })
         .eq('id', config.id)
         .select(`
-            id,
-            day,
-            partySize,
-            tries,
-            failed,
-            venue,
-            complete,
-            jobId,
-            jobError,
-            user (
-                id,
-                phoneNumber,
-                resyId,
-                resyToken,
-                resyEmail,
-                resyRefreshToken,
-                resyPaymentMethodId,
-                resyGuestId,
-                email
-            )
-                `)
+            *,
+            user ( * ),
+            venue ( * )`
+        )
         .single();
 
     if (error) {
@@ -78,27 +61,10 @@ export const resetFailures = async (config: Types.Watcher, WatcherQueue:Worker |
                 .update({ failed: 0 })
                 .eq('id', config.id)
                 .select(`
-            id,
-            day,
-            partySize,
-            tries,
-            venue,
-            failed,
-            complete,
-            jobId,
-            jobError,
-            user (
-                id,
-                phoneNumber,
-                resyId,
-                resyToken,
-                resyRefreshToken,
-                resyEmail,
-                resyPaymentMethodId,
-                resyGuestId,
-                email
-            )
-                `)
+                    *,
+                    user ( * ),
+                    venue ( * )`
+                )
                 .single();
 
             
@@ -120,30 +86,13 @@ export const markCompleteIfToday = async (config: Types.Watcher, WatcherQueue:Wo
             await db
                 .client
                 .from('worker')
-                .update({ tries: config.tries += 1, complete: true  })
+                .update({ tries: config.tries += 1, complete: true, expired: true  })
                 .eq('id', config.id)
                 .select(`
-            id,
-            day,
-            partySize,
-            tries,
-            venue,
-            failed,
-            complete,
-            jobId,
-            jobError,
-            user (
-                id,
-                phoneNumber,
-                resyId,
-                resyToken,
-                resyRefreshToken,
-                resyEmail,
-                resyPaymentMethodId,
-                resyGuestId,
-                email
-            )
-                `)
+                    *,
+                    user ( * ),
+                    venue ( * )`
+                )
                 .single();
 
             
@@ -151,13 +100,16 @@ export const markCompleteIfToday = async (config: Types.Watcher, WatcherQueue:Wo
                 console.error('No job id found');
                 return;
             }
-            await Text.sendText(config.user.phoneNumber, `Watcher completed its run without finding a table for ${config.venue?.name} :(`);
+            if (config.user?.phoneNumber) {
+                await Text.sendText(config.user.phoneNumber, `Watcher completed its run without finding a table for ${config.venue?.name} :(`);
+            }
             await WatcherQueue.deleteJob(config.jobId);
         }
     }
 };
 
 export const seatingCheck = async (config: Types.Watcher, WatcherQueue:Worker | DevWorker) => {
+    
     const seatings = await Resy.seatings(config);
 
     if (seatings.availibleSlots === 0) {
@@ -169,6 +121,8 @@ export const seatingCheck = async (config: Types.Watcher, WatcherQueue:Worker | 
         console.log('Job deleted');
         return false;
     }
+
+    console.log(`Found ${seatings.availibleSlots} slots for ${config?.venue?.name} on ${config.day}`);
 
     return seatings;
 };
@@ -198,30 +152,15 @@ export const bookSeating = async (seatings: Types.SeatingResponse, config: Types
             .update({ complete: true })
             .eq('id', config.id)
             .select(`
-            id,
-            day,
-            partySize,
-            tries,
-            venue,
-            failed,
-            complete,
-            jobId,
-            jobError,
-            user (
-                id,
-                phoneNumber,
-                resyId,
-                resyToken,
-                resyEmail,
-                resyRefreshToken,
-                resyPaymentMethodId,
-                resyGuestId,
-                email
-            )
-                `)
+                *,
+                user ( * ),
+                venue ( * )
+            `)
             .single();
 
-        await Text.sendText(config.user.phoneNumber, `Found a table at ${config?.venue?.name} for ${config?.partySize}`);
+        if (config.user?.phoneNumber) {
+            await Text.sendText(config.user.phoneNumber, `Found a table at ${config?.venue?.name} for ${config?.partySize}`);
+        }
     } else {
         console.log(`Booking failed for ${config.venue?.name}`);
     }
@@ -240,27 +179,10 @@ export const updateWatcherWithErrors = async (config: Types.Watcher, jobError:un
             .update({ ...update})
             .eq('id', config.id)
             .select(`
-            id,
-            day,
-            partySize,
-            tries,
-            failed,
-            venue,
-            complete,
-            jobId,
-            jobError,
-            user (
-                id,
-                phoneNumber,
-                resyId,
-                resyToken,
-                resyEmail,
-                resyRefreshToken,
-                resyPaymentMethodId,
-                resyGuestId,
-                email
+                *,
+                user ( * ),
+                venue ( * )`
             )
-                `)
             .single();
 
         if (error) {
@@ -271,7 +193,9 @@ export const updateWatcherWithErrors = async (config: Types.Watcher, jobError:un
         if (config.failed >= 5) {
             console.log('Watcher failed 5 times. Deleting job');
             // Text user that job failed
-            await Text.sendText(config.user.phoneNumber, `Watcher failed 5 times for ${config.venue?.name}\n Killing job.`);
+            if (config.user?.phoneNumber) {
+                await Text.sendText(config.user.phoneNumber, `Watcher failed 5 times for ${config.venue?.name}\n Killing job.`);
+            }
             await WatcherQueue.deleteJob(config.jobId);
         }
     } catch (error) {

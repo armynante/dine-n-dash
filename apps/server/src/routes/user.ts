@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import db from '../db.js';
 import { verifyToken } from 'diner-utilities';
+import { User } from 'diner-utilities/dist/types.js';
 
 const router = Router() as Router;
 
@@ -8,10 +9,8 @@ const router = Router() as Router;
 router.get('/', verifyToken, async (req, res) => {
     try {
         const { token } = req;
-        console.log('Getting user');
-        const id = token?.id;
-        console.log(id);
-        const { data, error } = await db.client.from('user').select('*').eq('id', id).single();
+        const user = await db.getUser(token?.email);
+        const { data, error } = await db.client.from('user').select('*').eq('id', user.id).single();
         
         if (error) {
             throw error;
@@ -36,17 +35,24 @@ router.put('/', verifyToken, async (req, res) => {
     console.log('Updating user');
     try {
         const { token } = req;
-        const id = token?.id;
-        const { data, error } = await db.client.from('user').update(req.body).eq('id', id).single();
+        const user = await db.getUser(token?.email);
+        const { data, error } = await db
+            .client
+            .from('user')
+            .update(req.body)
+            .eq('id', user.id)
+            .select()
+            .single() as unknown as { data: User, error: Error };
 
         if (error) {
             throw error;
         }
 
-        
+        console.log(data);
+
         res.status(200).json({
             message: 'User updated successfully',
-            user: {
+            data: {
                 ...data,
                 password: undefined,
             },

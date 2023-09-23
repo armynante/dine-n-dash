@@ -18,9 +18,8 @@ export class Database {
     async getUser(email:string) {
         const { data, error } = await this.client
             .from('user')
-            .select()
+            .select('*')
             .eq('email', email)
-            .select()
             .single();
 
         if (error) {

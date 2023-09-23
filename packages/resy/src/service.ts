@@ -76,8 +76,13 @@ export class ResyService {
 
         const headers = formatHeader(user.resyToken!, Types.ContentType.JSON);
         const params = formatParams(query);
+
+        console.info('Searching for reservations');
+        console.info(params);
     
         const resyResponse = await axios.get(reservationUrl, { headers, params, proxy: this.agent});
+
+        console.log('Parsing response');
   
         const slots = parseResySeatingResponse(
             resyResponse,
@@ -86,6 +91,9 @@ export class ResyService {
             venue,
             partySize as number
         );
+
+        console.info('slots');
+        console.info(slots);
 
         return slots;
     }
@@ -104,9 +112,7 @@ export class ResyService {
         };
         try {
             const headers = formatHeader(user.resyToken!, Types.ContentType.JSON);
-            console.log(headers);
             const response = await axios.post(RESY_SEARCH_URL, querySlug, { headers, proxy: this.agent });
-            console.log(response.headers);
             const venuesFormated = formatVenues(response);
             return venuesFormated;
         } catch (error) {
@@ -116,6 +122,7 @@ export class ResyService {
     }
 
     async requestBooking(bookingRequest: Types.BookingRequest) {
+        console.info('Requesting booking');
 
         this.checkUserTokens(bookingRequest.user,['resyToken']);
 
@@ -131,6 +138,7 @@ export class ResyService {
     }
 
     async confirmBooking(confirmBookingRequest:Types.ConfirmBookingRequest) {
+        console.info('Confirming booking');
         const { book_token, user } = confirmBookingRequest;
 
         this.checkUserTokens(user,['resyToken','resyPaymentMethodId']);

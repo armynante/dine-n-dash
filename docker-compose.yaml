@@ -65,6 +65,7 @@ services:
     volumes:
       - ./apps/web/src:/diner-mono/src
       - ./apps/web/static:/diner-mono/static
+      # node_modules is not mounted because it is installed in the container
       # - ./apps/web/vite.config.js:/diner-mono/vite.config.js
       # - ./apps/web/tsconfig.json:/diner-mono/tsconfig.json
       # - ./apps/web/svelte.config.js:/diner-mono/svelte.config.js

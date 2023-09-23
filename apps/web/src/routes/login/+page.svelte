@@ -24,6 +24,7 @@
       error = "";
       localStorage.setItem("jwt", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "/";
     } else {
       // parse error in response body
       const { message } = await response.json();
@@ -99,7 +100,7 @@
 
     <p class="mt-10 text-center text-sm text-gray-500">
       Not registered?{' '}
-      <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+      <a href="/register" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
         Sign up here
       </a>
     </p>

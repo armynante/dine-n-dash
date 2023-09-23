@@ -15,19 +15,32 @@ const router = Router() as Router;
 const EmailClient = new Email();
 
 router.post('/register', async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    const { email, password, confirm } = req.body;
 
     console.log('Registering user');
     console.log(email, password);
 
     try {
+
+        if (!email) {
+            throw new Error('Email is required');
+        }
+
+        if (!password) {
+            throw new Error('Password is required');
+        }
+        
+        if (password !== confirm) {
+            throw new Error('Passwords do not match');
+        }
+
         // Generate a salt with a work factor of 10 (higher value = more secure but slower)
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const verifyToken = jwt.sign({ email }, secretKey, { expiresIn: '1d' });
 
         // Save the user to the database
-        const { data: user, error } = await db
+        const { error } = await db
             .client
             .from('user')
             .insert({
@@ -43,7 +56,10 @@ router.post('/register', async (req: Request, res: Response) => {
 
         // send email 
         await EmailClient.verify(email, verifyToken);
-        res.json({ message: 'Success. Check your email to verify the account', user });
+        res.status(201).json({ 
+            message: 'Success. Check your email to verify the account',
+            data: { token: verifyToken },
+        });
     } catch (error) {
         console.error(error);
         const err = error as Error;
@@ -100,16 +116,16 @@ router.get('/verify', async (req: Request, res: Response) => {
 
 router.post('/reset-password', verifyToken, async (req: Request, res: Response) => {
     const { token } = req;
+    const user = await db.getUser(token?.email);
 
     console.log('Resetting password');
-    const email = token?.email;
 
     try {
-        const { data: user, error } = await db
+        const { data: updatedUser, error } = await db
             .client
             .from('user')
             .select('*')
-            .eq('email', email)
+            .eq('email', user.email)
             .single();
 
         if (error) {
@@ -120,7 +136,7 @@ router.post('/reset-password', verifyToken, async (req: Request, res: Response) 
             throw new Error('No email found');
         }
 
-        const token = jwt.sign({ user }, secretKey, { expiresIn: '1d' });
+        const token = jwt.sign({ updatedUser }, secretKey, { expiresIn: '1d' });
         
         await db
             .client
@@ -128,9 +144,9 @@ router.post('/reset-password', verifyToken, async (req: Request, res: Response) 
             .update({
                 resetToken: token,
             })
-            .eq('email', email);
+            .eq('email', updatedUser.email);
         
-        await EmailClient.reset(user.email, token);
+        await EmailClient.reset(updatedUser.email, token);
         
         res.json({ message: 'Password reset email sent' });
     } catch (error) {
@@ -220,6 +236,8 @@ router.post('/login', async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign(user, secretKey, { expiresIn: '365d' });
+
+        res.set('HX-Redirect', '/dashboard');
 
         res.json({ message: 'Login successful', token, user });
     } catch (error) {

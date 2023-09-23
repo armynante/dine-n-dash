@@ -118,7 +118,6 @@ export class DevWorker {
         const queueLength = await this.queue.count();
         console.log('Queue length:', queueLength);
     }
-    
 
     async sendBatch(payloads: Watcher[]) {
         console.log('Sending DEV batch');
@@ -136,6 +135,8 @@ export class DevWorker {
     async deleteJob(jobId: string) {
         try {
             const job = await this.queue.getJob(jobId);
+            console.log('Deleting job');
+            console.log(job);
             if (!job) return false;
             await job.remove();
             return true;

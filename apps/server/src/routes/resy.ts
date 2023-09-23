@@ -49,7 +49,11 @@ router.post('/login', verifyToken, async (req: Request, res: Response) => {
         console.log('User updated');
         const token = jwt.sign(updatedUser, secretKey, { expiresIn: '365d' });
 
-        res.status(200).send({token, user: updatedUser});
+        res.status(200).send({
+            token,
+            user: updatedUser,
+            message: 'successfully authenticated with Resy',
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send({
@@ -61,10 +65,41 @@ router.post('/login', verifyToken, async (req: Request, res: Response) => {
 router.get('/search', verifyToken, async (req: Request, res: Response) => {
     try {
         const { venueName } = req.query;
-        const { token: user } = req;
+        const { token } = req;
+        const user = await db.getUser(token.email);
         console.log(`Searching for ${venueName}`);
         const venues = await Resy.searchVenues(user as User, venueName as string);
-        res.status(200).send(venues);
+        const { data:favorites, error } = await db
+            .client
+            .from('favorites')
+            .select('*')
+            .eq('userId', user.id);
+
+        if (error) {
+            throw error;
+        }
+
+        console.log(venues);
+
+        const venuesWithFavorites = venues.venues?.map((venue: Venue) => {
+            const isFavorite = favorites.find((favorite: Venue) => {
+                return `${favorite.siteId}` === `${venue.id}`;
+            });
+            return {
+                name: venue.name,
+                site: 'resy',
+                siteId: venue.id,
+                neighborhood: venue.neighborhood,
+                city: venue.region,
+                isFavorite: !!isFavorite,
+            };
+        });
+
+        res.status(200).send({
+            message: 'Successfully retrieved venues',
+            venues: venuesWithFavorites,
+            count: venues.count,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send(error);
@@ -74,7 +109,8 @@ router.get('/search', verifyToken, async (req: Request, res: Response) => {
 router.get('/seatings', verifyToken, async (req: Request, res: Response) => {
     try {
         const { startTime, endTime, venue, partySize, day } = req.body;
-        const { token: user } = req;
+        const { token } = req;
+        const user = await db.getUser(token.email);
         const query = {
             startTime,
             endTime,
@@ -94,7 +130,8 @@ router.get('/seatings', verifyToken, async (req: Request, res: Response) => {
 router.post('/book', verifyToken, async (req: Request, res: Response) => {
     try {
         const { slot } = req.body;
-        const { token: user } = req; 
+        const { token } = req;
+        const user = await db.getUser(token.email);
         const bookingRequest = await Resy.requestBooking({
             config_id: slot.bookingData.config_id,
             party_size: slot.partySize,

@@ -10,8 +10,10 @@ app.use(express.json());
 let WatcherQueue:Worker | DevWorker;
 
 if (process.env.NODE_ENV === 'development') {
+    console.log('Using dev queue');
     WatcherQueue = new DevWorker();
 } else {
+    console.log('Using prod queue');
     WatcherQueue = new Worker();
 }
 
@@ -26,27 +28,13 @@ const runQueue = async (seconds?:number) => {
                 .client
                 .from('worker')
                 .select(`
-            id,
-            day,
-            partySize,
-            tries,
-            failed,
-            venue,
-            complete,
-            jobId,
-            jobError,
-            user (
-                id,
-                phoneNumber,
-                resyId,
-                resyToken,
-                resyEmail,
-                resyRefreshToken,
-                resyPaymentMethodId,
-                resyGuestId,
-                email )
+                    *,
+                    user ( * ),
+                    venue ( * )
               `)
                 .eq('complete', false);
+
+            console.log(`Found ${workers.length} workers`);
 
             if (error) {
                 console.error('Error:', error); // Note: I've changed console.log to console.error for better visibility

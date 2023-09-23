@@ -38,7 +38,10 @@
 <form class="mt-16">
   <div class="space-y-12">
     <div class="border-b border-gray-900/10 pb-12">
-      <h2 class="text-base font-semibold leading-7 text-gray-900">User Settings</h2>
+      <h2 class="text-base font-semibold leading-7 text-gray-900">Sign up for an account</h2>
+      <p class="mt-4 text-sm leading-6 text-gray-500">
+        Already have an account?
+      <a href="/login" class="font-medium text-gray-900 hover:underline">Login</a>
 
       <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div class="sm:col-span-4">
@@ -78,9 +81,7 @@
           {/if}
           </div>
         </div>
-       
-       
-          
+      
         </div>
         
       </div>

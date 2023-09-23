@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
     WatcherQueue = new Worker();   
 }
 
-router.get('/testSQS', async (req: Request, res: Response) => {
+router.get('/testSQS', verifyToken, async (req: Request, res: Response) => {
     try {
         const message = {
             name: 'test',
@@ -36,7 +36,7 @@ router.get('/testSQS', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/purgeSQS', async (req: Request, res: Response) => {
+router.get('/purgeSQS', verifyToken, async (req: Request, res: Response) => {
     try {
         const resp = await WatcherQueue.clear();
         res.status(200).send(resp);
@@ -75,8 +75,31 @@ router.post('/', verifyToken, async (req: Request, res: Response) => {
   
     try {
         console.log('Creating watcher');
-        const { startTime, endTime, venue, partySize, day } = req.body;
-        const { token: user } = req;
+        const { startTime, endTime, restaurant, partySize, day } = req.body;
+        const { token } = req;
+        const user = await db.getUser(token.email);
+
+        const { data: upsertedRestaurant, error: upsertedRestaurantError } = await db
+            .client
+            .from('venue')
+            .upsert(
+                { 
+                    site: 'resy',
+                    siteId: restaurant.siteId,
+                    name: restaurant.name,
+                    city: restaurant.city,
+                    neighborhood: restaurant.neighborhood,
+                }, { onConflict: 'siteId' }   
+            )
+            .select()
+            .single();
+
+        if (upsertedRestaurantError) {
+            throw upsertedRestaurantError;
+        }
+
+        const venue = upsertedRestaurant.id;
+
         const query = {
             startTime,
             endTime,
@@ -89,55 +112,62 @@ router.post('/', verifyToken, async (req: Request, res: Response) => {
             .from('worker')
             .insert([{ ...query, user: (user as User).id }])
             .select(`
-            id,
-            day,
-            partySize,
-            tries,
-            failed,
-            complete,
-            jobId,
-            jobError,
-            venue,
-            user (
-                id,
-                phoneNumber,
-                resyId,
-                resyToken,
-                resyRefreshToken,
-                resyEmail,
-                resyPaymentMethodId,
-                resyGuestId,
-                email
-            )
-                `)
+                *,
+                venue (
+                    name,
+                    site,
+                    siteId,
+                    neighborhood,
+                    city
+                ),
+                user (
+                    *
+                )
+            `)
             .single();
 
         if (error) {
             console.log('error inserting watcher');
             throw error;
         }
+                        
+        res.status(201).json({
+            message: 'Watcher created successfully',
+            data
+        });
 
-        await WatcherQueue.add({ ...data });
-
-        res.status(201).json(data);
     } catch (error) {
         console.error(error);
         res.status(500).json(error);
     }
 });
 
-router.get('/list', verifyToken, async (req: Request, res: Response) => {
+router.get('/', verifyToken, async (req: Request, res: Response) => {
+    const { token } = req;
+    const user = await db.getUser(token.email);
     try {
         const { data, error } = await db
             .client
             .from('worker')
-            .select();
+            .select(`
+                *,
+                venue (
+                    name,
+                    site,
+                    siteId,
+                    neighborhood,
+                    city
+                )
+            `)
+            .eq('user', user.id);
 
         if (error) {
             throw error;
         }
-
-        res.status(200).json(data);
+        res.status(200).json({
+            message: 'Watchers retrieved successfully',
+            data,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json(error);
@@ -147,38 +177,27 @@ router.get('/list', verifyToken, async (req: Request, res: Response) => {
 router.delete('/:id', verifyToken, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+        const { token } = req;
+        const user = await db.getUser(token.email);
         const { data, error } = await db
             .client
             .from('worker')
-            .select()
+            .delete()
             .eq('id', id)
-            .single();
+            .eq('user', user.id);
 
         if (error) {
             throw error;
         }
 
-        const deletedJob = await WatcherQueue.deleteJob(data.jobId);
-        
-        if (deletedJob) {
-            console.log('Watcher job removed');
+        console.log(data);
 
-            const { error: workerError } = await db
-                .client
-                .from('worker')
-                .delete()
-                .eq('id', id);
+        // const deletedJob = await WatcherQueue.deleteJob(data.jobId);
+        res.status(200).send({
+            message: 'Watcher removed successfully',
+            data,
+        });
 
-            if (workerError) {
-                throw workerError;
-            }
-
-            console.log('Watcher removed');
-            res.status(200).send('Watcher Job removed');
-        } else {
-            console.log('Watcher not found', data);
-            res.status(400).send('Watcher not found');
-        }
     } catch (error) {
         console.error(error);
         res.status(500).json(error);

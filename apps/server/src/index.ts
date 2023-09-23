@@ -2,19 +2,23 @@
 // @ts-nocheck
 import express, { Request, Response } from 'express';
 import serverless from 'serverless-http';
-import watcherRoutes from './routes/watcher.js';
+import watcherRoutes from './routes/watchers.js';
 import authRoutes from './routes/auth.js';
 import resyRoutes from './routes/resy.js';
 import userRoutes from './routes/user.js';
 import favoritesRoutes from './routes/favorites.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+
 dotenv.config();
 
 // Set up middleware
 const corsOptions = {
     origin: '*',
     optionsSuccessStatus: 204,
+    credentials: true,
 };
 
 /* 
@@ -28,6 +32,8 @@ console.log('Starting server');
 const app = express();
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
+app.use(morgan('combined'));
 
 /* 
 * ########################################
@@ -35,7 +41,7 @@ app.use(express.json());
 * ########################################
 */
 
-app.use('/watch', watcherRoutes);
+app.use('/watchers', watcherRoutes);
 app.use('/auth', authRoutes);
 app.use('/resy', resyRoutes);
 app.use('/favorites', favoritesRoutes);
