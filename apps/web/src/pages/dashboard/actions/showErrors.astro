@@ -1,0 +1,10 @@
+---
+import ErrorMessage from '../../../components/modals/Error.astro'
+
+const data = await Astro.request.formData();
+const label = data.get('label');
+const errors = data.get('errors');
+
+---
+
+<ErrorMessage label={label} errors={errors} />

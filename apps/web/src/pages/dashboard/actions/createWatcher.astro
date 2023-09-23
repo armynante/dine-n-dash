@@ -1,0 +1,68 @@
+---
+import axios from 'axios';
+import WatcherItem from '../../../components/lists/WatcherItem.astro';
+
+const API_URL = import.meta.env.API_URL;
+
+let watcher;
+let restaurant;
+let startTime;
+let endTime;
+let date;
+let partySize;
+
+
+if ( Astro.request.method === "POST" ) {
+  const data = await Astro.request.formData();
+  restaurant = data.get("restaurant");
+  restaurant = JSON.parse(restaurant);
+  
+  startTime = data.get("startTime");
+  // startTime = JSON.parse(startTime);
+
+  endTime = data.get("endTime");
+  // endTime = JSON.parse(endTime);
+
+  date = data.get("date");
+  // date = JSON.parse(date);
+
+  partySize = data.get("partySize");
+  // partySize = JSON.parse(partySize);
+
+  date = new Date(date);
+
+  startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startTime.split(":")[0], startTime.split(":")[1]);
+  endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endTime.split(":")[0], endTime.split(":")[1]);
+  
+
+  const config = {
+    restaurant,
+    startTime: new Date(startTime),
+    endTime: new Date(endTime),
+    day: new Date(date),
+    partySize
+  }
+    
+  try {
+    const { data } = await axios({
+      url: `${API_URL}/watchers`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token").value
+      },
+      data: config
+    });
+
+    watcher = data.data;
+    console.log(watcher);
+  } catch (error) {
+    // console.log(error);
+    return;
+  }
+} 
+---
+<div id="watchers" hx-swap-oob="afterbegin">
+  <WatcherItem watcher={watcher}/>
+</div>
+

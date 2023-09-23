@@ -1,0 +1,36 @@
+---
+import axios from 'axios';
+import Favorite from '../../../components/lists/FavoriteItem.astro';
+
+const API_URL = import.meta.env.API_URL;
+
+let favorite;
+let key;
+let total;
+
+if ( Astro.request.method === "POST" ) {
+  const data = await Astro.request.formData();
+  let restaurant = data.get("restaurant");
+  key = data.get("key");
+  total = data.get("total");
+
+  favorite = JSON.parse(restaurant);
+  try {
+    const { data } = await axios({
+      url: `${API_URL}/favorites`,
+      method: "POST",
+      data: {
+        restaurant: favorite
+      }, 
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token").value
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+} 
+---
+<Favorite restaurant={favorite} key={key} total={total} />

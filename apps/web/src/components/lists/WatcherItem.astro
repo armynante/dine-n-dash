@@ -1,0 +1,79 @@
+---
+import Tiny from '../Buttons/Tiny.astro'
+import Chip from '../info/Chip.astro'
+import Status from '../info/Status.astro'
+import Loader from '../Loader.astro'
+let { key, total, watcher } = Astro.props;
+// delay-${delay * 200}
+const z = parseInt(total) - parseInt(key);
+const dayString = new Date(watcher?.day).toISOString().split('T')[0];
+const day = `${dayString.slice(5, 7)}/${dayString.slice(8, 10)}/${dayString.slice(0, 4)}`;
+const start = new Date(watcher?.startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+const end = new Date(watcher?.endTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+console.log(watcher);
+---
+
+<li 
+class=`even:bg-slate-100 bg-white outline-1 outline mt-[1px]`
+  style={`
+    animation-duration: ${200}ms;
+    animation-delay: ${key * 100}ms;
+    animation-name: slide;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    z-index: ${z};
+    position: relative;
+  `}
+  hx-target="this"
+>
+  <div class="flex flex-col p-4 hover:bg-slate-100 ">
+    <div class="flex flex-row ">
+      <div class="flex-grow">
+        <div class="text-md font-bold">{key})  {watcher?.venue?.name} @ {day} [{start} - {end}]</div>
+      </div>
+      <div class="flex-shrink-0 flex space-x-2">
+        <div id="action" class="htmx-indicator">
+          <Loader classData={"self-center fill-black-500"} h="14" w="14" />
+        </div>
+        <!-- <div class="text-md"><Tiny label="Watch"></div> -->
+        <form
+          hx-delete="/dashboard/actions/rmWatcher"
+          hx-indicator="#indicate"
+          hx-confirm="Are you sure you want to delete this watcher?"
+        >
+          <input type="hidden" name="watcherId" value={watcher.id} />
+          <button type="submit" class="hover:bg-red-300 space-x-2 px-2 text-sm inline-flex items-center outline">
+            <span class="text-red-500 uppercase">Delete <span>
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="flex flex-row space-x-3 mt-2 justify-between">
+      <div class="text-sm text-slate-500">{watcher?.venue?.city}, {watcher?.venue?.neighborhood}</div>
+      <div class="flex space-x-3">
+        { watcher?.complete &&
+          <div class={`text-xs ${ watcher?.expired ? 'bg-amber-400' : 'bg-green-400' }  text-black uppercase p-1 rounded outline-1 outline outline-black`}>
+            { watcher?.expired ? 'Expired' : 'Complete' }
+          </div>
+        }
+        { !watcher?.complete && 
+          <Status status={!watcher?.failure} good="Running" bad="failed" />
+        }
+        <Chip label="Ran" data={`${watcher?.tries} Times`} />
+        <form 
+        hx-post="/dashboard/actions/showErrors"
+        hx-target="#errors"
+        hx-trigger="click"
+        >
+          <div class="cursor-pointer ">
+            <div class="text-xs bg-slate-200  text-black uppercase p-1 rounded outline-1 outline outline-black">
+              Errors: { watcher.failed }
+            </div>
+            <input type="hidden" name="label" value={`Errors for: ${watcher.venue?.name}`} />
+            <input type="hidden" name="errors" value={JSON.stringify(watcher?.jobError, null, 4)} />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</li>

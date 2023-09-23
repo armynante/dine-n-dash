@@ -1,0 +1,66 @@
+---
+import BasicInput from "../../../components/inputs/BasicInput.astro";
+import Primary from "../../../components/Buttons/Primary.astro";
+import axios from "axios";
+const API_URL = import.meta.env.API_URL;
+
+
+let errorMsg = false;
+let success = false;
+let phoneNumber = "";
+let email = "";
+let verified = "";
+
+
+if ( Astro.request.method === "PUT" ) {
+  const formData = await Astro.request.formData();
+  phoneNumber = formData.get( "phoneNumber" ).trim();
+  
+  try {
+    const { data } = await axios({
+      url: `${API_URL}/users`,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token").value
+      },
+      data: {
+        phoneNumber
+      }
+    });
+
+    success = data.message || "Success";
+    phoneNumber = data.data?.phoneNumber;
+    email = data.data?.email;
+    verified = data.data?.verified;
+    
+
+  } catch (error) {
+    console.log(error);
+    errorMsg = error?.response?.data?.message || "Something went wrong";
+  }
+}
+
+---
+
+<form 
+  hx-put='/dashboard/settings/update'
+>
+  <BasicInput type="email" name="email" label={email} value={email} disabled={true} reminder="need to reset?" link={"/dashboard/settings/reset"} />
+  <BasicInput type="text" name="verified" label={verified} value={verified} disabled={true} reminder="resend verification?" link={"/dashboard/settings/verify"} />
+  <BasicInput
+    type="phone"
+    name="phone"
+    label="phone number"
+    value={phoneNumber}
+    mask="(999) 999-9999"
+  />
+
+  
+
+  <Primary type="submit" label="Save"/>
+  {errorMsg && <p class="error">{errorMsg}</p>}
+  {success && <p class="success text-green-400">{success}</p>}
+  
+</form>
+

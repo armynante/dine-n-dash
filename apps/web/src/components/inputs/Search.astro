@@ -1,0 +1,60 @@
+---
+import Loader from '../Loader.astro';
+import Tiny from '../Buttons/Tiny.astro';
+import TinyWarn from '../Buttons/TinyWarn.astro';
+import SearchIcon from '../Icons/SearchIcon.astro';
+---
+
+
+<div 
+  class="flex flex-col p-4 outline"
+>
+  <!-- Title and loader -->
+  <div class='flex flex-row mb-2'>
+    <div class='flex-grow'>
+      <span class='text-xl'>Search</span>
+    </div>
+    <div id="indicate" class='htmx-indicator flex-shrink'>
+      <Loader id="indicate"/>
+    </div>
+  </div>
+
+  <!-- Search bar -->
+  <form
+    hx-post='/dashboard/actions/query'
+    hx-target='#restaurantList'
+    hx-indicator="#indicate"
+  >
+    <div class='flex flex-row outline'>
+      <div class='flex-shrink items-center flex outline p-2'>
+        <SearchIcon color="gray"/>
+      </div>
+      <input
+        type='text'
+        name="query"
+        class='w-full p-2 text-lg outline flex-grow'
+        placeholder='Carbone'
+        autocomplete="off"
+      />
+      <div class='flex-shrink space-x-3 active:bg-black active:text-white hover:bg-slate-300 hover:outline'>          
+        <button class='p-2 text-lg '>Search</button>
+      </div>
+    </div>
+  </form>
+
+    <!--  buttons -->
+    <div class='flex flex-row pt-3'>
+      <div class='flex-grow'>
+        <span class='text-md'>Search for a resturant</span>
+      </div>
+      <div class='flex-shrink space-x-3'>
+        <form 
+          hx-get='/dashboard/Favorites'
+          hx-target='#search'
+          hx-swap="innerHTML"
+        >        
+          <Tiny label='cancel' color="red" type="submit"/>
+        </form>
+      </div>
+  </div>
+</div>

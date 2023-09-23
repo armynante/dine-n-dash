@@ -1,0 +1,37 @@
+---
+import DashLayout from '../../layouts/DashLayout.astro';
+import Card from '../../components/Card.astro';
+import RestaurantSearch from './RestaurantSearch.astro';
+import Favorites from './favorites.astro';
+import Watchers from './Watchers.astro';
+import ErrorModal from '../../components/modals/Error.astro';
+
+const cookie = Astro.cookies.get('token');
+if (!cookie) {
+  return await Astro.redirect('/login');
+}
+
+---
+
+<DashLayout title="Dashboard">
+	<main class="h-full">
+		<div class="grid grid-cols-12 gap-28 w-full h-full">
+			<div class="col-span-5 h-full" id="favorites">
+				<!-- <Favorities /> -->
+        <Favorites />
+			</div>
+			<div
+        div class="col-span-7"
+        hx-get="/dashboard/Watchers"
+        hx-trigger="every 15s"
+        hx-swap="innerHTML"
+      >
+				<Watchers />
+			</div>
+		</div>
+    <div id="errors">
+
+    </div>
+    
+	</main>
+</DashLayout>

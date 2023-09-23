@@ -1,0 +1,65 @@
+---
+import Tiny from '../Buttons/Tiny.astro'
+import Inventory from '../info/Inventory.astro'
+import Loader from '../Loader.astro'
+let { key, total, restaurant } = Astro.props;
+// delay-${delay * 200}
+const z = parseInt(total) - parseInt(key);
+---
+
+<li 
+class=`even:bg-slate-100 bg-white outline-1 outline mt-[1px]`
+  style={`
+    animation-duration: ${200}ms;
+    animation-delay: ${key * 100}ms;
+    animation-name: slide;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    z-index: ${z};
+    position: relative;
+  `}
+  hx-target="this"
+>
+  <div class="flex flex-col p-4 hover:bg-slate-100 ">
+    <div class="flex flex-row ">
+      <div class="flex-grow">
+        <div class="text-md font-bold">{key})  {restaurant.name}</div>
+      </div>
+      <div class="flex-shrink-0 flex space-x-2">
+        <div id="action" class="htmx-indicator">
+          <Loader classData={"self-center fill-black-500"} h="14" w="14" />
+        </div>
+        <div class="text-md">
+          <div class="text-md">
+            <form
+              hx-post="/dashboard/actions/addWatcher"
+              hx-target="#favoritesList"
+              hx-swap="afterbegin"
+            >
+              <input type="hidden" name="restaurant" value={JSON.stringify(restaurant)} />
+              <Tiny label="Watch" type="submit"/>
+            </form>
+          </div>
+        </div>
+        <form
+          hx-delete="/dashboard/actions/rmFavorite"
+          hx-indicator="#indicate"
+        >
+          <input type="hidden" name="restaurant" value={JSON.stringify(restaurant)} />
+          <input type="hidden" name="key" value={key} />
+          <input type="hidden" name="total" value={total} />
+          <button type="submit" class="[&_svg]:hover:animate-pulse hover:bg-slate-400 hover:text-white hover:outline hover:outline-black active:bg-black space-x-2 px-2 text-sm inline-flex items-center outline">
+            <svg class="" width="10" height="10px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="red" fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Favorite<span>
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="flex flex-row space-x-3 mt-2 justify-between">
+      <div class="text-sm text-slate-500">{restaurant.city}, {restaurant.neighborhood}</div>
+      <!-- <Inventory value={siteData?.inventory?.length} /> -->
+    </div>
+  </div>
+</li>

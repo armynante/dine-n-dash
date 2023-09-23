@@ -1,0 +1,10 @@
+---
+const {label,color,type} = Astro.props
+---
+
+<button 
+  class=`text-sm uppercase px-6 bg-white outline outline-black hover:outline-2 hover:bg-slate-50 active:bg-black active:text-white`
+  type={type || 'button'} 
+>
+  <span class=`text-${color}-500`>{label}</span>
+</button>

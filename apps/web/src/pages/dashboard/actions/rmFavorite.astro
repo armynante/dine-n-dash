@@ -1,0 +1,34 @@
+---
+import axios from 'axios';
+import AddFavorite from '../../../components/lists/NotFavoriteItem.astro';
+
+const API_URL = import.meta.env.API_URL;
+
+let favorite;
+let restaurant;
+let key;
+let total;
+
+if ( Astro.request.method === "DELETE" ) {
+  const data = await Astro.request.formData();
+  restaurant = data.get("restaurant");
+  key = data.get("key");
+  total = data.get("total");
+  restaurant = JSON.parse(restaurant);
+  console.log(restaurant);
+  try {
+    const { data } = await axios({
+      url: `${API_URL}/favorites/${restaurant.siteId}`,
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token").value
+      },
+    });
+  } catch (error) {
+    // console.log(error);
+    return;
+  }
+} 
+---
+<AddFavorite restaurant={restaurant} key={key} total={total} />

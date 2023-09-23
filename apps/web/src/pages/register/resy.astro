@@ -1,0 +1,48 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import BasicInput from "../../components/inputs/BasicInput.astro";
+import Primary from "../../components/Buttons/Primary.astro";
+import axios from "axios";
+
+const cookie = Astro.cookies.get('token');
+
+if (!cookie) {
+  return await Astro.redirect('/login');
+}
+
+---
+<Layout title="Home">
+  <main class="px-48 pt-12">
+    <div class="grid grid-cols-12 gap-24 ">
+      <div class="col-span-6 outline-1 outline">
+        <div class="flex flex-col px-40 py-12 space-y-6">
+          <h1 class="text-4xl font-bold uppercase mb-4">
+            Set up your resy account
+          </h1>
+          <p class="text-md">
+            Authenticate with the email and password you use for Resy. We use this to authenticate with Resy and get an access token. We don't store your password.
+          </p>
+          <form 
+            hx-post='/register/resyAuth'
+          >
+            <BasicInput
+              type="text"
+              label="resy email"
+              name="email"
+            />
+            <BasicInput type="password" name="password" label="resy password"  />
+
+
+            <div class="mt-16">
+              <Primary type="submit" label="Authenticate"/>
+            </div>
+            
+          </form>
+        </div>
+      </div>
+      <div class="col-span-6 outline-1 outline">
+        <img src="/running-man.png" class="h-full w-full"/>
+      </div>
+    </div>
+  </main>
+</Layout>

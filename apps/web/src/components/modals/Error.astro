@@ -1,0 +1,46 @@
+---
+const { label, errors } = Astro.props
+---
+
+<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" id="modal">
+  <!--
+    Background backdrop, show/hide based on modal state.
+
+    Entering: "ease-out duration-300"
+      From: "opacity-0"
+      To: "opacity-100"
+    Leaving: "ease-in duration-200"
+      From: "opacity-100"
+      To: "opacity-0"
+  -->
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+  <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-5xl sm:p-6">
+        <div>
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+            <svg fill="#000000" width="800px" height="800px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              <title>error</title>
+              <path d="M26.5 27h-3c-0.276 0-0.5-0.224-0.5-0.5s0.224-0.5 0.5-0.5h2.5v-2.5c0-0.276 0.224-0.5 0.5-0.5 0.275 0 0.5 0.224 0.5 0.5v3c0 0.276-0.225 0.5-0.5 0.5zM26.5 21c-0.276 0-0.5-0.224-0.5-0.5v-3c0-0.276 0.224-0.5 0.5-0.5 0.275 0 0.5 0.224 0.5 0.5v3c0 0.276-0.225 0.5-0.5 0.5zM26.5 15c-0.276 0-0.5-0.224-0.5-0.5v-3c0-0.276 0.224-0.5 0.5-0.5 0.275 0 0.5 0.224 0.5 0.5v3c0 0.276-0.225 0.5-0.5 0.5zM26.5 9c-0.276 0-0.5-0.224-0.5-0.5v-2.5h-2.5c-0.276 0-0.5-0.224-0.5-0.5s0.224-0.5 0.5-0.5h3c0.275 0 0.5 0.224 0.5 0.5v3c0 0.276-0.225 0.5-0.5 0.5zM20.5 27h-3c-0.276 0-0.5-0.224-0.5-0.5s0.224-0.5 0.5-0.5h3c0.275 0 0.5 0.224 0.5 0.5s-0.225 0.5-0.5 0.5zM20.5 6h-3c-0.276 0-0.5-0.224-0.5-0.5s0.224-0.5 0.5-0.5h3c0.275 0 0.5 0.224 0.5 0.5s-0.225 0.5-0.5 0.5zM14.5 6h-3c-0.276 0-0.5-0.224-0.5-0.5s0.224-0.5 0.5-0.5h3c0.275 0 0.5 0.224 0.5 0.5s-0.225 0.5-0.5 0.5zM8.5 27h-3c-0.276 0-0.5-0.224-0.5-0.5v-3c0-0.276 0.224-0.5 0.5-0.5s0.5 0.224 0.5 0.5v2.5h2.5c0.276 0 0.5 0.224 0.5 0.5s-0.224 0.5-0.5 0.5zM8.5 6h-2.5v2.5c0 0.276-0.224 0.5-0.5 0.5s-0.5-0.224-0.5-0.5v-3c0-0.276 0.224-0.5 0.5-0.5h3c0.276 0 0.5 0.224 0.5 0.5s-0.224 0.5-0.5 0.5zM5.5 11c0.276 0 0.5 0.224 0.5 0.5v3c0 0.276-0.224 0.5-0.5 0.5s-0.5-0.224-0.5-0.5v-3c0-0.276 0.224-0.5 0.5-0.5zM5.5 17c0.276 0 0.5 0.224 0.5 0.5v3c0 0.276-0.224 0.5-0.5 0.5s-0.5-0.224-0.5-0.5v-3c0-0.276 0.224-0.5 0.5-0.5zM20.736 19.723l-1.014 1.014c-0.186 0.187-0.488 0.187-0.675 0l-2.87-2.87-2.87 2.87c-0.187 0.187-0.488 0.187-0.675 0l-1.013-1.014c-0.187-0.187-0.187-0.488 0-0.675l2.871-2.87-2.871-2.87c-0.187-0.186-0.187-0.488 0-0.675l1.013-1.013c0.187-0.187 0.488-0.187 0.675 0l2.87 2.87 2.87-2.87c0.187-0.187 0.489-0.187 0.675 0l1.014 1.013c0.186 0.187 0.186 0.489 0 0.675l-2.871 2.87 2.871 2.87c0.186 0.186 0.186 0.488 0 0.675zM11.5 26h3c0.275 0 0.5 0.224 0.5 0.5s-0.225 0.5-0.5 0.5h-3c-0.276 0-0.5-0.224-0.5-0.5s0.224-0.5 0.5-0.5z"></path>
+              </svg>
+          </div>
+          <div class="mt-3  sm:mt-5">
+            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">{label}</h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500">{errors}</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 sm:mt-6">
+          <form 
+            hx-get="/dashboard"
+            hx-target="#errors"
+            hx-trigger="click"
+          >
+            <button type="button" type="submit" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Go back to dashboard</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

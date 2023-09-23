@@ -1,0 +1,77 @@
+---
+import BasicInput from "../../../components/inputs/BasicInput.astro";
+import Secondary from "../../../components/Buttons/Secondary.astro";
+import Primary from "../../../components/Buttons/Primary.astro";
+import DashLayout from "../../../Layouts/DashLayout.astro";
+import Inputmask from "inputmask";
+
+import axios from "axios";
+
+const API_URL = import.meta.env.API_URL;
+
+let errorMsg = false;
+let emailError = false;
+let confirmError = false;
+let success = false;
+let phoneNumber = "";
+let email = "";
+let verified = "";
+
+try {
+  const { data } = await axios({
+    url: `${API_URL}/users`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": Astro.cookies.get("token").value
+    }
+  });
+
+  phoneNumber = data?.user?.phoneNumber;
+  email = data?.user?.email;
+  verified = data?.user?.verified;
+  
+  console.log(phoneNumber, email);
+
+  success = data.message || "Success";
+} catch (error) {
+  console.log(error);
+  errorMsg = error?.response?.data?.message || "Something went wrong";
+}
+
+---
+<DashLayout title="settings">
+  <main class="px-48 pt-12">
+    <div class="grid grid-cols-12 gap-24 ">
+      <div class="col-span-8 outline-1 outline">
+        <div class="flex flex-col px-40 py-12 space-y-14">
+          <h1 class="text-4xl font-bold uppercase">
+            Settings
+          </h1>
+
+          <form 
+            hx-put='/dashboard/settings/update'
+          >
+            <BasicInput type="email" name="email" label={email} value={email} disabled={true} reminder="need to reset?" link={"/dashboard/settings/reset"} />
+            <BasicInput type="text" name="verified" label={verified} value={verified} disabled={true} reminder="resend verification?" link={"/dashboard/settings/verify"} />
+            <BasicInput
+              type="phone"
+              name="phoneNumber"
+              label="phone number"
+              value={phoneNumber}
+              mask="(999) 999-9999"
+            />
+
+            
+
+            <Primary type="submit" label="Save"/>
+            
+          </form>
+        </div>
+      </div>
+      <!-- <div class="col-span-6 outline-1 outline">
+        <img src="/running-man.png" class="h-full w-full"/>
+      </div> -->
+    </div>
+  </main>
+</DashLayout>

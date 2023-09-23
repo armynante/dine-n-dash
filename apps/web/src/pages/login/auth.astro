@@ -1,0 +1,74 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import BasicInput from "../../components/inputs/BasicInput.astro";
+import Primary from "../../components/Buttons/Primary.astro";
+import axios from "axios";
+const API_URL = import.meta.env.API_URL;
+
+
+let errorMsg = false;
+let emailError = false;
+let confirmError = false;
+let success = false;
+
+if ( Astro.request.method === "POST" ) {
+  console.log("post");
+  const data = await Astro.request.formData();
+  const password = data.get( "password" ).trim();
+  const email = data.get( "email" ).trim();
+  
+  try {
+    const resp = await axios.post( `${API_URL}/auth/login`,{
+      email,
+      password
+    });
+
+    if ( resp.status === 200 ) {
+      console.log(resp.headers);
+      await Astro.cookies.set("token", resp.data.token, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7
+      });
+      
+      success = resp.data.message;
+      return new Response(null, {
+        headers: {
+          "HX-Redirect": "/dashboard"
+        }
+      });
+      
+    }
+  } catch (error) {
+    console.log(error);
+    errorMsg = error.response.data.message;
+    if (errorMsg.includes("user found")) {
+      emailError = errorMsg;
+    } else {
+      emailError = errorMsg;
+    }
+    console.log(error);
+  }
+}
+---
+
+<form 
+  hx-post='/login'
+  hx-swap="none"
+>
+  <BasicInput
+    type="email"
+    label="email"
+    error={errorMsg}
+    reminder="Don't have an account?"
+    link="/register"
+  />
+  <BasicInput type="password" label="password" reminder="Forgot your password?" id="#loading"/>
+  <div class="mb-12">
+    
+  </div>
+
+  <Primary type="submit" label="Login"/>
+
+    { success && <p class="text-green-500 text-sm mt-2">{success}</p> }
+  
+</form>

@@ -1,0 +1,38 @@
+---
+import axios from 'axios';
+import WatcherItem from '../../../components/lists/WatcherItem.astro';
+
+const API_URL = import.meta.env.API_URL;
+
+let watcherId;
+
+console.log(Astro.request.method);
+
+if ( Astro.request.method === "DELETE" ) {
+  const data = await Astro.request.formData();
+  watcherId = data.get("watcherId");
+
+  console.log("watcherId");
+  console.log(watcherId);
+    
+  try {
+    const { data } = await axios({
+      url: `${API_URL}/watchers/${watcherId}`,
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token").value
+      }
+    });
+
+    console.log(data);
+
+    const message = data?.message;
+    console.log(message);
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+} 
+
+---

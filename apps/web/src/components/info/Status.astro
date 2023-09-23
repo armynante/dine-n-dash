@@ -1,0 +1,11 @@
+---
+const {status, good, bad} = Astro.props;
+---
+<div class={`relative text-xs xs bg-slate-200 cursor-default uppercase p-1 rounded outline-1 outline outline-black`}>
+  <span class="top-0 absolute right-0 h-3 w-3">
+    <span class="-top-1 absolute left-1 animate-ping inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+    <span class={`-top-1 absolute left-1 inline-flex rounded-full h-3 w-3 ${ status ? "bg-green-500" : "bg-red-500"}`}></span>
+  </span>
+  
+  {status ? good : bad}
+</div>

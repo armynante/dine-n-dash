@@ -1,0 +1,59 @@
+---
+
+import Tiny from '../../../components/Buttons/Tiny.astro';
+const data = await Astro.request.formData();
+let restaurant = data.get('restaurant');
+restaurant =JSON.parse(restaurant);
+---
+<li class="py-4 px-4 flex flex-col overflow-hidden space-y-3 outline" id="createWatcherForm">
+  <form 
+    hx-post="/dashboard/actions/createWatcher"
+    hx-target="#createWatcherForm"
+    hx-swap="outerHTML"
+  >
+    <input type="hidden" name="restaurant" value={JSON.stringify(restaurant)} />
+    <!-- HEADER -->
+    <div class="flex flex-row items-center">
+      <div class="text-xl">{restaurant.name}</div>
+    </div>
+      
+    <div class="grid grid-cols-3 gap-3">
+      <div class="col-span-1 flex-col flex">
+        <label for="partySize" class="text-sm">Party</label>
+        <input name="partySize" type="number" min="1" max="8" class=" border border-gray-300 rounded-md p-2" value="2"/>
+      </div>
+      <div class="col-span-1 flex-col flex">
+        <label for="startTime" class="text-sm">Start Time</label>
+        <input name="startTime" type="time" step="900" class="border border-gray-300 rounded-md p-2" value="19:30"/>
+      </div>
+      <div class="col-span-1 flex-col flex">
+        <label for="endTime" class="text-sm">End Time</label>
+        <input name="endTime" type="time" step="900" class="border border-gray-300 rounded-md p-2" value="21:30"/>
+      </div>
+    
+      <div class=" col-span-1 flex-col flex">
+        <label for="date" class="text-sm">Date</label>
+        <input name="date" type="date" value="2023-09-23" class="border border-gray-300 rounded-md p-2" />
+      </div>
+      <div class="col-span-1 grid place-items-center pt-5 pb-1 px-4">
+        <button 
+          class=`text-sm uppercase px-6 w-full h-full bg-white outline outline-black hover:outline-2 hover:bg-slate-50 active:bg-black active:text-white`
+          type='submit'
+        >
+        <span class=`text-green-500`>Create</span>
+      </button>
+      </div>
+    </div>
+
+    <div
+      class="flex flex-row justify-between pt-3 mr-4"
+      hx-target="#createWatcherForm"
+      hx-swap="delete"
+      hx-get="/dashboard/Favorites"
+      hx-trigger="click"
+    >
+        <p class="text-sm text-slate-500">This will create a watcher that looks for a reservation</p>
+        <Tiny label="cancel" color="red" />
+    </div>
+  </form>
+ </li>

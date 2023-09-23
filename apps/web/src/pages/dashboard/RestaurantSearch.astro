@@ -1,0 +1,22 @@
+---
+import Secondary from '../../components/Buttons/Secondary.astro'
+import Search from '../../components/inputs/Search.astro'
+import Tiny from '../../components/Buttons/Tiny.astro'
+---
+<div class="space-y-4 flex h-full flex-col pb-12" id="search">
+  <div class="grid grid-cols-2 items-center">
+    <div class="text-2xl uppercase">Resaturants</div>
+</div>
+
+  <!-- MAIN -->
+  <div class="outline flex h-full flex-col">
+    <!-- SEARCH -->
+    <Search />
+
+    <div class="flex h-full max-h-full flex-col relative">
+      <ul class="divide-y divide-dashed scroll overflow-y-auto absolute top-0 left-0 right-0 bottom-0" id="restaurantList">
+
+      </ul>
+    </div>
+  </div>
+</div>

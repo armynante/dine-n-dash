@@ -1,0 +1,67 @@
+---
+const type = Astro.props.type;
+const label = Astro.props.label;
+const error = Astro.props.error;
+const success = Astro.props.success;
+const help = Astro.props.help;
+const reminder = Astro.props.reminder;
+const name = Astro.props.name;
+const link = Astro.props.link;
+const placeholder = Astro.props.placeholder;
+const value = Astro.props.value;
+const mask = Astro.props.mask;
+const disabled = Astro.props.disabled;
+
+---
+<script>
+  import Inputmask from "inputmask";
+  document.querySelectorAll(".maskinput").forEach((input) => {
+  Inputmask().mask(input);
+  input.addEventListener("complete", function() {
+    input.setAttribute("value",this.inputmask.unmaskedvalue() )
+    console.log(input)
+  });
+  input.addEventListener("incomplete", function() {
+    input.setAttribute("value", this.inputmask.unmaskedvalue())
+    console.log(input)
+  });
+});
+
+</script>
+
+<div class="mb-4 flex flex-col">
+  <div class="mb-2 flex flex-row items-center justify-between">
+    <label for={name} class="text-xl uppercase">
+      {label}
+    </label>
+  { reminder && 
+    <a href={link} class="text-sm float-right text-blue-500 underline uppercase">
+        {reminder}
+    </a>
+  }
+  </div>
+  <input
+    type={type}
+    name={name}
+    class={`w-full p-2 text-lg border-black border ${disabled ? 'border-dashed' : ''} ${mask ? 'maskinput' : ''}`}
+    placeholder={placeholder}
+    autocomplete="on"
+    value={value}
+    data-inputmask="'mask': '+1 (999)-999-9999'"
+    disabled={disabled}
+  />
+  <div class="text-md text-gray-500">
+    {help}
+  </div>
+    { error && 
+      <span class="text-red-500 text-md">
+        {error}
+      </span>
+    }
+    { success && 
+      <span class="text-green-500 text-md">
+        {success}
+      </span>
+    }
+
+</div>

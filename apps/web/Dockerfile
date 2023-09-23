@@ -14,14 +14,14 @@ RUN ls -al
 # Copy the rest of the app
 COPY ./apps/web ./
 
-# Set Environment variable
-ENV PORT 3000
+ENV HOST=0.0.0.0
+ENV PORT=4321
 
 # Expose ports
-EXPOSE 3000 24678 5173
+EXPOSE 4321
 
 # Run the app
-CMD [ "npm", "run", "dev", "--", "--host" ]
+CMD node ./dist/server/entry.mjs
 
 
 

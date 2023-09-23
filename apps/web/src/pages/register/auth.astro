@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import BasicInput from "../../components/inputs/BasicInput.astro";
+import Primary from "../../components/Buttons/Primary.astro";
+import axios from "axios";
+
+const API_URL = import.meta.env.API_URL;
+
+let errorMsg = false;
+let emailError = false;
+let confirmError = false;
+let success = false;
+
+if ( Astro.request.method === "POST" ) {
+  const data = await Astro.request.formData();
+  const password = data.get( "password" ).trim();
+  const email = data.get( "email" ).trim();
+  const confirm = data.get( "confirm" ).trim();
+  
+  try {
+    const resp = await axios.post( `${API_URL}/auth/register`,{
+      email,
+      password,
+      confirm
+    });
+    if ( resp.status === 201 ) {
+      if (!resp?.data?.data?.token ) {
+        throw new Error("No token");
+      }
+      await Astro.cookies.set("token", resp?.data?.data?.token, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7
+      });
+      
+      success = resp?.data?.message;
+
+    }
+  } catch (error) {
+    console.log(error);
+    errorMsg = error?.response?.data?.message;
+    if (errorMsg?.includes("exists")) {
+      emailError = errorMsg;
+    } else {
+      confirmError = errorMsg;
+    }
+  }
+}
+---
+
+{ !success &&
+
+  <form 
+    hx-post='/register/auth'
+  >
+    <BasicInput
+      type="email"
+      label="email"
+      name="email"
+      error={emailError}
+      reminder="Already have an account?"
+      link="/login"
+    />
+    <BasicInput type="password" name="password" label="password"  />
+    <BasicInput
+      type="password"
+      name="confirm"
+      label="confirm password"
+      error={confirmError}
+    />
+
+      <Primary type="submit" label="Retry"/>
+    
+  </form>
+}
+
+{ success && 
+  <a href="/register/resy" class="bg-black text-white inline-flex items-center justify-center gap-x-4 w-full outline p-2 outline-white hover:outline-2 hover:outline-black hover:bg-slate-400 active:bg-slate-600  text-2xl">
+    Set up Resy
+  </a>
+  <p class="text-green-500 text-center mt-4">{success}</p>
+}
