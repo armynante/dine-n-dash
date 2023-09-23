@@ -15,7 +15,7 @@ if ( Astro.request.method === "GET" ) {
     const resp = await axios.get(`${API_URL}/favorites`, {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": Astro.cookies.get("token").value
+        "Authorization": Astro.cookies.get("token")?.value
       },
     });
     faves = resp?.data?.data;
@@ -54,7 +54,7 @@ if ( Astro.request.method === "GET" ) {
     <div class="flex h-full max-h-full flex-col relative outline">
       <ul class="divide-y divide-dashed scroll overflow-y-auto absolute top-0 left-0 right-0 bottom-0" id="favoritesList">
         {
-          faves.length > 0 ? faves.map((fave, index) => {
+          faves.length > 0 ? faves.map((fave:any, index:number) => {
             return <Favorite
                       restaurant={fave}
                       key={index + 1}

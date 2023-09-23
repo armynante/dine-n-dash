@@ -1,4 +1,5 @@
 ---
+// @ts-nocheck
 const type = Astro.props.type;
 const label = Astro.props.label;
 const error = Astro.props.error;
@@ -14,6 +15,7 @@ const disabled = Astro.props.disabled;
 
 ---
 <script>
+  // @ts-nocheck
   import Inputmask from "inputmask";
   document.querySelectorAll(".maskinput").forEach((input) => {
   Inputmask().mask(input);

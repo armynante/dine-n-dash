@@ -1,20 +1,20 @@
 ---
 import BasicInput from "../../../components/inputs/BasicInput.astro";
 import Primary from "../../../components/Buttons/Primary.astro";
-import axios from "axios";
+import axios, { AxiosError, type AxiosResponse } from "axios";
 const API_URL = import.meta.env.API_URL;
 
 
-let errorMsg = false;
+let errorMsg = false as unknown as string | null | Error;
 let success = false;
-let phoneNumber = "";
+let phoneNumber = "" as string | null | FormDataEntryValue
 let email = "";
 let verified = "";
 
 
 if ( Astro.request.method === "PUT" ) {
   const formData = await Astro.request.formData();
-  phoneNumber = formData.get( "phoneNumber" ).trim();
+  phoneNumber = formData.get( "phoneNumber" );
   
   try {
     const { data } = await axios({
@@ -22,10 +22,10 @@ if ( Astro.request.method === "PUT" ) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": Astro.cookies.get("token").value
+        "Authorization": Astro.cookies.get("token")?.value
       },
       data: {
-        phoneNumber
+        phoneNumber: phoneNumber
       }
     });
 
@@ -37,6 +37,7 @@ if ( Astro.request.method === "PUT" ) {
 
   } catch (error) {
     console.log(error);
+    // @ts-ignore
     errorMsg = error?.response?.data?.message || "Something went wrong";
   }
 }

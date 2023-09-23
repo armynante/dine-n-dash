@@ -1,11 +1,12 @@
 ---
+// @ts-nocheck
 import axios from 'axios';
 import WatcherItem from '../../../components/lists/WatcherItem.astro';
 
 const API_URL = import.meta.env.API_URL;
 
 let watcher;
-let restaurant;
+let restaurant: any;
 let startTime;
 let endTime;
 let date;
@@ -29,6 +30,7 @@ if ( Astro.request.method === "POST" ) {
   partySize = data.get("partySize");
   // partySize = JSON.parse(partySize);
 
+  // @ts-ignore
   date = new Date(date);
 
   startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startTime.split(":")[0], startTime.split(":")[1]);
@@ -49,7 +51,7 @@ if ( Astro.request.method === "POST" ) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": Astro.cookies.get("token").value
+        "Authorization": Astro.cookies.get("token")?.value
       },
       data: config
     });

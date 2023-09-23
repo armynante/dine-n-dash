@@ -14,7 +14,7 @@ if ( Astro.request.method === "POST" ) {
     const resp = await axios.get(`${API_URL}/resy/search?venueName=${query}`, {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": Astro.cookies.get("token").value
+        "Authorization": Astro.cookies.get("token")?.value
       },
   });
   restaurants = resp.data.venues;
