@@ -1,18 +1,16 @@
 # Dockerfile
-FROM node:18-alpine
+FROM oven/bun:latest
 
 # Set working directory
 WORKDIR /diner-mono
 
-# Copy only the package files and install dependencies
-COPY ./apps/web/package*.json ./
-RUN npm install
-
-# Debugging: list directory contents
-RUN ls -al
-
-# Copy the rest of the app
 COPY ./apps/web ./
+
+# install curl 
+
+RUN bun install
+
+RUN ls -la
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
@@ -21,7 +19,7 @@ ENV PORT=4321
 EXPOSE 4321
 
 # Run the app
-CMD node ./dist/server/entry.mjs
+CMD ["bun", "dev"]
 
 
 

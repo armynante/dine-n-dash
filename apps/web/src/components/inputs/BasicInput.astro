@@ -19,14 +19,6 @@ const disabled = Astro.props.disabled;
   import Inputmask from "inputmask";
   document.querySelectorAll(".maskinput").forEach((input) => {
   Inputmask().mask(input);
-  input.addEventListener("complete", function() {
-    input.setAttribute("value",this.inputmask.unmaskedvalue() )
-    console.log(input)
-  });
-  input.addEventListener("incomplete", function() {
-    input.setAttribute("value", this.inputmask.unmaskedvalue())
-    console.log(input)
-  });
 });
 
 </script>

@@ -16,6 +16,12 @@ if ( Astro.request.method === "PUT" ) {
   const formData = await Astro.request.formData();
   phoneNumber = formData.get( "phoneNumber" );
   
+  // strip out non-numeric characters except for the plus sign
+  // @ts-ignore
+  phoneNumber = phoneNumber?.replace(/[^0-9+]/g, "");
+
+  console.log(phoneNumber);
+  
   try {
     const { data } = await axios({
       url: `${API_URL}/users`,

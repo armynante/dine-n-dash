@@ -7,7 +7,7 @@ import DashLayout from "../../../layouts/DashLayout.astro";
 
 import axios from "axios";
 
-const API_URL = import.meta.env.API_URL;
+const CONTROLLER_HOST = import.meta.env.CONTROLLER_HOST;
 
 let errorMsg = false;
 let emailError = false;
@@ -16,10 +16,11 @@ let success = false;
 let phoneNumber = "";
 let email = "";
 let verified = "";
+let status = "";
 
 try {
   const { data } = await axios({
-    url: `${API_URL}/users`,
+    url: `${CONTROLLER_HOST}/status`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -27,13 +28,8 @@ try {
     }
   });
 
-  phoneNumber = data?.user?.phoneNumber;
-  email = data?.user?.email;
-  verified = data?.user?.verified;
-  
-  console.log(phoneNumber, email);
+  status = data;
 
-  success = data.message || "Success";
 } catch (error) {
   console.log(error);
   errorMsg = error?.response?.data?.message || "Something went wrong";
@@ -46,14 +42,14 @@ try {
       <div class="col-span-8 outline-1 outline">
         <div class="flex flex-col px-40 md:py-12 sm:px-10 space-y-14">
           <h1 class="text-4xl font-bold uppercase">
-            Settings
+            Controller Settings
           </h1>
 
           <form 
-            hx-put='/dashboard/settings/update'
+            hx-put='/dashboard/controller/update'
           >
-            <BasicInput type="email" name="email" label={email} value={email} disabled={true} reminder="need to reset?" link={"/dashboard/settings/reset"} />
-            <BasicInput type="text" name="verified" label={verified} value={verified} disabled={true} reminder="resend verification?" link={"/dashboard/settings/verify"} />
+            <BasicInput type="text" name="status" label="status" value={status} disabled={true} />
+            <BasicInput type="radio" name="verified" label="set" value={verified} />
             <BasicInput
               type="phone"
               name="phoneNumber"

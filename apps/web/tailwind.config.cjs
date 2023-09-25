@@ -3,6 +3,9 @@ module.exports = {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		extend: {
+			screens: {
+				'3xl': '2400px',
+			},
 			keyframes: {
         slide: {
           '0%': {
@@ -19,7 +22,7 @@ module.exports = {
 				slide: 'slide 1s ease-in-out',
 			},
 			fontFamily: {
-				sans: ['Inconsolata','monospace']
+				sans: ['VT323', 'monospace']
 			}
 		},
 	},
