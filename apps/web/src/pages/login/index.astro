@@ -6,11 +6,11 @@ import Primary from "../../components/Buttons/Primary.astro";
 ---
 
 <Layout title="Login">
-  <main class="px-48 pt-12 pb-12">
-    <div class="grid grid-cols-12 gap-24 ">
-      <div class="col-span-6 outline-1 outline">
-        <div class="flex flex-col px-40 md:py-12 sm:px-10 space-y-14">
-          <h1 class="text-4xl font-bold text-center uppercase">
+  <main class="2xl:px-44 px-4 pt-2 xl:mt-11 mt-2 ">
+    <div class="grid grid-cols-12 2xl:gap-32 xl:gap-20 gap-4 ">
+      <div class="col-span-12 md:col-span-6 outline-1 outline">
+        <div class="flex flex-col 2xl:px-32 2xl:mt-16 xl:px-20 xl:mt-11 lg:px-6 lg:mt-4 md:px-11 md:mt-2 mt-2 px-6 py-12 space-y-14">
+          <h1 class="text-4xl font-bold uppercase">
             Welcome back
           </h1>
           <form 
@@ -23,8 +23,15 @@ import Primary from "../../components/Buttons/Primary.astro";
               reminder="Don't have an account?"
               link="/register"
             />
-            <BasicInput name="password" type="password" label="password" reminder="Forgot your password?" id="#loading"/>
-            <div class="mt-16">
+            <BasicInput
+              name="password"
+              type="password"
+              label="password"
+              reminder="Forgot your password?"
+              link="/forgot-password"
+              id="#loading"
+            />
+              <div class="mt-16">
               <Primary type="submit" label="Login"/>
             </div>
 
@@ -32,7 +39,7 @@ import Primary from "../../components/Buttons/Primary.astro";
           </form>
         </div>
       </div>
-      <div class="col-span-6 outline-1 outline">
+      <div class="hidden md:flex col-span-6 outline-1 outline">
         <img src="/running-man.png" class="h-full w-full"/>
       </div>
     </div>

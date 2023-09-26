@@ -18,11 +18,15 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 let task:cron.ScheduledTask;
-let CRON_STATUS = 'stopped 🛑';
 
-const runQueue = async (seconds?:number) => {
-    CRON_STATUS = 'running 🏁';
-    task = cron.schedule(`*/${seconds || 15} * * * * *`, async () => {
+const CRON_STATUS_RUN = 'Running 🏁';
+const CRON_STATUS_STOP = 'Stopped 🛑';
+let CRON_RUNNING = false;
+let CRON_INTERVAL = 15;
+
+const runQueue = async () => {
+    task = cron.schedule(`*/${CRON_INTERVAL} * * * * *`, async () => {
+        CRON_RUNNING = true;
         try {
             const { data:workers, error } = await db
                 .client
@@ -51,6 +55,7 @@ const runQueue = async (seconds?:number) => {
 
             console.log(`Sending ${messages.length} messages to queue`);
             await WatcherQueue.sendBatch(messages);
+            return task;
         } catch (error) {
             console.error('Error:', error);
             throw error;
@@ -64,50 +69,65 @@ app.get('/', (req: Request, res: Response) => {
 
 app.post('/start', verifyToken, async (req: Request, res: Response) => {
     await runQueue();
+    CRON_RUNNING = true;
     res.status(200).send('Cron started 🏁');
 });
 
 app.post('/stop', verifyToken, (req: Request, res: Response) => {
     task.stop();
-    CRON_STATUS = 'stopped 🛑';
+    CRON_RUNNING = false;
     res.status(200).send('Cron stopped 🛑');
 });
 
 app.get('/status', verifyToken, (req: Request, res: Response) => {
-    res.status(200).send(CRON_STATUS);
+    res.status(200).send({
+        status: CRON_RUNNING ? CRON_STATUS_RUN : CRON_STATUS_STOP,
+        interval: CRON_INTERVAL,
+    });
 });
 
-
 app.post('/setCron', verifyToken, async (req: Request, res: Response) => {
-    const { schedule } = req.body;
-    const parsedSeconds = Number(schedule);
+    const { interval, run } = req.body;
+    const parsedSeconds = Number(interval);
 
-    console.log(req.body);
+    CRON_INTERVAL = parsedSeconds;
 
-    if (!parsedSeconds) {
-        res.status(400).send('No seconds provided');
-        return;
-    }
-
-    if (isNaN(Number(parsedSeconds))) {
+    if (interval && isNaN(Number(parsedSeconds))) {
         res.status(400).send('Seconds must be a number');
         return;
     }
 
-    if (Number(parsedSeconds) < 1) {
+    if (interval && Number(parsedSeconds) < 1) {
         res.status(400).send('Seconds must be greater than 0');
         return;
     }
 
-    console.log(`Received cron interval request: ${parsedSeconds} seconds`);
+    if (interval) {
+        console.log(`Received cron interval request: ${parsedSeconds} seconds`);
+    }
 
     if (task) {
         console.log('Stopping existing cron task');
+        CRON_RUNNING = false;
         task.stop();
     }
 
-    await runQueue(parsedSeconds);
-    res.status(200).send(`Cron interval set to ${parsedSeconds} seconds`);
+    if (run) {
+        console.log('Starting cron task', run);
+        await runQueue();
+        CRON_RUNNING = true;
+    } else {
+        console.log('Stopping cron task', run);
+        task.stop();
+        CRON_RUNNING = false;
+    }
+    res.status(200).send({
+        message: `Cron interval set to ${CRON_INTERVAL} seconds and status is ${CRON_RUNNING ? CRON_STATUS_RUN : CRON_STATUS_STOP}`,
+        data: {
+            status: CRON_RUNNING ? CRON_STATUS_RUN : CRON_STATUS_STOP,
+            interval: CRON_INTERVAL,
+        }
+    }); 
 });
 
 app.listen(8000, () => {

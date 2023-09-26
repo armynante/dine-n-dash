@@ -1,9 +1,14 @@
----
+---import NavLink from '../components/info/NavLink.astro';
+
 interface Props {
 	title: string;
 }
 
 const { title } = Astro.props;
+
+const cookie = Astro.cookies.get('token') ?? false;
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.slice(1); // remove the first "/"
 
 ---
 <!doctype html>
@@ -20,16 +25,35 @@ const { title } = Astro.props;
 		<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;400;900&display=swap" rel="stylesheet">
 		<title>{title}</title>
 	</head>
-	<body class="flex h-full flex-col pb-1 mx-12 min-h-full max-h-full" hx-ext="loading-states">
-		<nav class="flex justify-between items-center p-8 mb-6 ">
+	<body class="flex h-full flex-col pb-1 mx-1 md:mx-12 min-h-full max-h-full" hx-ext="loading-states">
+		<nav class="md:visible hidden md:flex justify-between items-center p-8 mb-6 ">
 			<div class="flex items-center space-x-2">
-				<img src="/logo.jpeg" class="w-10 h-10"/>
-				<a href="/" class="text-gray-900 text-2xl capitalize">Dine-N-Dash</a>
+				<a href="/" class="text-gray-900 text-2xl capitalize flex items-center space-x-2">
+					<img src="/logo.jpeg" class="w-10 h-10"/>
+					<span>Dine-N-Dash</span>
+				</a>
 			</div>
 			<div class="flex justify-end space-x-7 text-2xl">
-				<a href="/logout" class="text-gray-900 hover:underline hover:text-blue-500">Logout</a>
-				<a href="/blog" class="text-gray-900">Blog</a>
-				<a href="/about" class="text-gray-900">About</a>
+				<NavLink currentPath={currentPath} link="/dashboard" text="dashboard" hidden={!cookie}/>
+				<NavLink currentPath={currentPath} link="/dashboard/settings" text="settings" hidden={!cookie}/>
+				<NavLink currentPath={currentPath} link="/register" text="register" hidden={cookie}/>
+				<NavLink currentPath={currentPath} link="/login" text="login" hidden={cookie}/>
+				<NavLink currentPath={currentPath} link="/logout" text="logout" hidden={!cookie}/>
+			</div>
+		</nav>
+		
+		<nav class="md:hidden flex justify-between items-center p-8 mb-6 ">
+			<div class="flex items-center space-x-2">
+				<a href="/" class="">
+					<img src="/logo.jpeg" class="w-6 h-6"/>
+				</a>
+			</div>
+			<div class="flex justify-end space-x-7 text-lg">
+				<NavLink currentPath={currentPath} link="/dashboard" text="dashboard" hidden={!cookie}/>
+				<NavLink currentPath={currentPath} link="/dashboard/settings" text="settings" hidden={!cookie}/>
+				<NavLink currentPath={currentPath} link="/register" text="register" hidden={cookie}/>
+				<NavLink currentPath={currentPath} link="/login" text="login" hidden={cookie}/>
+				<NavLink currentPath={currentPath} link="/logout" text="logout" hidden={!cookie}/>
 			</div>
 		</nav>
 		<div class="flex h-full flex-col">

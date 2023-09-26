@@ -2,37 +2,30 @@
 import Layout from "../../layouts/Layout.astro";
 import BasicInput from "../../components/inputs/BasicInput.astro";
 import Primary from "../../components/Buttons/Primary.astro";
-import axios from "axios";
 
 ---
-<Layout title="Register">
+
+<Layout title="Forgot Pasword">
   <main class="2xl:px-44 px-4 pt-2 xl:mt-11 mt-2 ">
     <div class="grid grid-cols-12 2xl:gap-32 xl:gap-20 gap-4 ">
       <div class="col-span-12 md:col-span-6 outline-1 outline">
         <div class="flex flex-col 2xl:px-32 2xl:mt-16 xl:px-20 xl:mt-11 lg:px-6 lg:mt-4 md:px-11 md:mt-2 mt-2 px-6 py-12 space-y-14">
           <h1 class="text-4xl font-bold uppercase">
-            Sign Up to Dash
+            Reset Password
           </h1>
           <form 
-            hx-post='/register/auth'
+            hx-post='/forgot-password/reset'
           >
             <BasicInput
               type="email"
               label="email"
               name="email"
-              reminder="Already have an account?"
-              link="/login"
             />
-            <BasicInput type="password" name="password" label="password"  />
-            <BasicInput
-              type="password"
-              name="confirm"
-              label="confirm password"
-            />
-
+            
             <div class="mt-16">
-              <Primary type="submit" label="Login"/>
+              <Primary type="submit" label="Reset"/>
             </div>
+
             
           </form>
         </div>

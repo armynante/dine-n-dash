@@ -2,13 +2,15 @@
 import Layout from "../layouts/Layout.astro";
 import Secondary from "../components/Buttons/Secondary.astro";
 import Primary from "../components/Buttons/Primary.astro";
+const cookie = Astro.cookies.get('token') ?? false;
+
 ---
 
 <Layout title="Home">
-  <main class="px-48 pt-12 ">
-    <div class="grid grid-cols-12 gap-24 ">
-      <div class="md:col-span-6 col-span-12 outline-1 outline">
-        <div class="flex flex-col 3xl:px-56 2xl:px-32 2xl:mt-16 xl:px-32 xl:mt-11 lg:px-32 lg:mt-4 md:px-11 md:mt-2 mt-2 px-6 py-12 space-y-14">
+  <main class="2xl:px-44 px-4 pt-2 xl:mt-11 mt-2 ">
+    <div class="grid grid-cols-12 2xl:gap-32 xl:gap-20 gap-4 ">
+      <div class="col-span-12 md:col-span-6 outline-1 outline">
+        <div class="flex flex-col 2xl:px-32 2xl:mt-16 xl:px-20 xl:mt-11 lg:px-6 lg:mt-4 md:px-11 md:mt-2 mt-2 px-6 py-12 space-y-14">
           <h1 class="text-4xl font-bold uppercase">
             Wine, Dine, and Dash...
           </h1>
@@ -16,15 +18,22 @@ import Primary from "../components/Buttons/Primary.astro";
             Keep an eye out for hard to get reservations at your favorite restaurants.
             Use as a CLI or a web app.
           </h2>
-          <a href="/register" class="">
-            <Primary label="Register" />
-          </a>
-          <a href="/login" class="">
-            <Secondary label="Login" />
-          </a>
+          { !cookie &&
+            <a href="/register" class="">
+              <Primary label="Register" />
+            </a>
+            <a href="/login" class="">
+              <Secondary label="Login" />
+            </a>
+          }
+          { cookie &&
+            <a href="/dashboard" class="">
+              <Primary label="Dashboard" />
+            </a>
+          }
         </div>
       </div>
-      <div class="col-span-6 outline-1 outline">
+      <div class="col-span-12 md:col-span-6 outline-1 outline">
         <img src="/running-man.png" class="h-full w-full"/>
       </div>
     </div>

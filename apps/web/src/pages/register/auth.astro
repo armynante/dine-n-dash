@@ -13,9 +13,9 @@ let success = false;
 
 if ( Astro.request.method === "POST" ) {
   const data = await Astro.request.formData();
-  const password = data.get( "password" ).trim();
-  const email = data.get( "email" ).trim();
-  const confirm = data.get( "confirm" ).trim();
+  const password = data.get( "password" )
+  const email = data.get( "email" )
+  const confirm = data.get( "confirm" )
   
   try {
     const resp = await axios.post( `${API_URL}/auth/register`,{
@@ -37,8 +37,10 @@ if ( Astro.request.method === "POST" ) {
     }
   } catch (error) {
     console.log(error);
+    //@ts-ignore
     errorMsg = error?.response?.data?.message;
-    if (errorMsg?.includes("exists")) {
+    //@ts-ignore
+    if (errorMsg && errorMsg?.includes("exists")) {
       emailError = errorMsg;
     } else {
       confirmError = errorMsg;

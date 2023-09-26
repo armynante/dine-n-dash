@@ -40,6 +40,10 @@ export class Email {
             body: `
                 Welcome to dine-n-dash. Please click the link below to verify your email address.
                 ${process.env.HOST}/auth/verify?email=${to}&token=${token}
+            `,
+            html: `
+                <p>Welcome to dine-n-dash. Please click the link below to verify your email address.</p>
+                <a href="${process.env.HOST}/auth/verify?email=${to}&token=${token}">Verify Email</a>
             `
         });
         await this.send(params);
@@ -52,13 +56,18 @@ export class Email {
             subject: 'Password reset',
             body: `
                 Please click the link below to reset your password.
-                ${process.env.HOST}/auth/reset-password?token=${token}
+                ${process.env.WEB_HOST}/new-password?token=${token}&email=${to}
+            `,
+            html: `
+                <p>Please click the link below to reset your password.</p>
+                <a href="${process.env.WEB_HOST}/new-password?token=${token}&email=${to}">Reset Password</a>
             `
+
         });
         await this.send(params);
     };
 
-    createMessage = ({ to, from, subject, body }:EmailMSG) => {
+    createMessage = ({ to, from, subject, body, html }:EmailMSG) => {
         return {
             Destination: {
                 ToAddresses: [to],
@@ -66,6 +75,7 @@ export class Email {
             Message: {
                 Body: {
                     Text: { Data: body },
+                    Html: { Data: html },
                 },
                 Subject: { Data: subject },
             },

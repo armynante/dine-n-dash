@@ -2,7 +2,7 @@ import db from '../db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Router, Request, Response } from 'express';
-import { Email, verifyToken } from 'diner-utilities';
+import { Email } from 'diner-utilities';
 
 const secretKey = process.env.JWT_SECRET;
 
@@ -114,41 +114,35 @@ router.get('/verify', async (req: Request, res: Response) => {
 });
 
 
-router.post('/reset-password', verifyToken, async (req: Request, res: Response) => {
-    const { token } = req;
-    const user = await db.getUser(token?.email);
-
+router.post('/reset-password', async (req: Request, res: Response) => {
+    
     console.log('Resetting password');
-
+    
     try {
-        const { data: updatedUser, error } = await db
-            .client
-            .from('user')
-            .select('*')
-            .eq('email', user.email)
-            .single();
+        const { email } = req.body;
+        const user = await db.getUser(email);
 
-        if (error) {
-            throw new Error(error.message);
-        }
+        console.log('user', user);
+        console.log(!user?.email);
+    
 
         if (!user?.email) {
             throw new Error('No email found');
         }
 
-        const token = jwt.sign({ updatedUser }, secretKey, { expiresIn: '1d' });
+        const newToken = jwt.sign({ user }, secretKey, { expiresIn: '1d' });
         
         await db
             .client
             .from('user')
             .update({
-                resetToken: token,
+                resetToken: newToken,
             })
-            .eq('email', updatedUser.email);
+            .eq('email', user.email);
         
-        await EmailClient.reset(updatedUser.email, token);
+        await EmailClient.reset(user.email, newToken);
         
-        res.json({ message: 'Password reset email sent' });
+        res.json({ message: 'Password reset email sent. Check you email to reset.' });
     } catch (error) {
         console.error(error);
         const err = error as Error;
@@ -159,11 +153,21 @@ router.post('/reset-password', verifyToken, async (req: Request, res: Response) 
 });
 
 router.post('/reset-password/verify', async (req: Request, res: Response) => {
-    const { email, token, password } = req.body;
+    const { email, token, password, confirmPassword } = req.body;
 
     console.log('Verifying password reset');
 
+    
     try {
+        
+        if (!password) {
+            throw new Error('Password is required');
+        }
+    
+        if (password !== confirmPassword) {
+            throw new Error('Passwords do not match');
+        }
+
         const { data: user, error } = await db
             .client
             .from('user')
@@ -178,6 +182,9 @@ router.post('/reset-password/verify', async (req: Request, res: Response) => {
         if (!user) {
             throw new Error('User not found');
         }
+
+        console.log('user.resetToken', user.resetToken);
+        console.log('token', token);
 
         if (user.resetToken !== token) {
             throw new Error('Invalid token');

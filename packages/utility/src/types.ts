@@ -3,6 +3,7 @@ export interface EmailMSG {
   from: string;
   subject: string;
   body: string;
+  html?: string;
 }
 
 export interface Watcher extends SeatingQuery {

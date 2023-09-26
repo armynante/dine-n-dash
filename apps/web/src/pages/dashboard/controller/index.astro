@@ -9,30 +9,33 @@ import axios from "axios";
 
 const CONTROLLER_HOST = import.meta.env.CONTROLLER_HOST;
 
-let errorMsg = false;
-let emailError = false;
-let confirmError = false;
-let success = false;
-let phoneNumber = "";
-let email = "";
-let verified = "";
+let errorMsg = "";
+let successMsg = "";
 let status = "";
+let running = false;
+let interval = "";
 
-try {
-  const { data } = await axios({
-    url: `${CONTROLLER_HOST}/status`,
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": Astro.cookies.get("token").value
-    }
-  });
+if ( Astro.request.method === "GET" ) {
 
-  status = data;
+  try {
+    const { data } = await axios({
+      url: `${CONTROLLER_HOST}/status`,
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token").value
+      }
+    });
 
-} catch (error) {
-  console.log(error);
-  errorMsg = error?.response?.data?.message || "Something went wrong";
+    status = data.status;
+    running = status === "Stopped 🛑" ? false : true;
+    console.log(running);
+    interval = data.interval;
+
+  } catch (error) {
+    console.log(error);
+    errorMsg = error?.response?.data?.message || "Something went wrong";
+  }
 }
 
 ---
@@ -46,19 +49,25 @@ try {
           </h1>
 
           <form 
-            hx-put='/dashboard/controller/update'
+            hx-post='/dashboard/controller/update'
           >
-            <BasicInput type="text" name="status" label="status" value={status} disabled={true} />
-            <BasicInput type="radio" name="verified" label="set" value={verified} />
-            <BasicInput
-              type="phone"
-              name="phoneNumber"
-              label="phone number"
-              value={phoneNumber}
-              mask="(999) 999-9999"
-            />
-
+            <BasicInput type="text" label="status" value={status} disabled={true} />
             
+            <!-- TOGGLE SERVICE ON OR OFF -->
+            <div class="flex flex-row items-center space-x-4 mb-4">
+              <label for="start" class="text-xl font-bold">
+                Run Service
+              </label>
+              <input type="checkbox" name="run" id="run" checked={running} />
+            </div>
+            
+            <!-- SET INTERVAL -->
+            <BasicInput
+              type="number"
+              name="interval"
+              label="interval in seconds"
+              value={interval}
+              />
 
             <Primary type="submit" label="Save"/>
             

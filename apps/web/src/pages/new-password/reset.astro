@@ -1,0 +1,91 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import BasicInput from "../../components/inputs/BasicInput.astro";
+import Primary from "../../components/Buttons/Primary.astro";
+import axios from "axios";
+
+const API_URL = import.meta.env.API_URL;
+
+let errorMsg = "";
+let emailError = "";
+let confirmError = "";
+let success = "";
+
+const token = Astro.url.searchParams.get("token");
+const email = Astro.url.searchParams.get("email");
+
+
+
+if ( Astro.request.method === "POST" ) {
+  const formData = await Astro.request.formData();
+  const email = formData.get( "email" );
+  const token = formData.get( "token" );
+  const password = formData.get( "password" );
+  const confirmPassword = formData.get( "confirmPassword" );
+  
+  try {
+    const { data } = await axios.post( `${API_URL}/auth/reset-password/verify`,{
+      email,
+      token,
+      password,
+      confirmPassword
+    });
+
+    success = data?.message;
+
+  } catch (error) {
+    // @ts-ignore
+    errorMsg = error?.response?.data?.message;
+    console.log(errorMsg);
+    if (errorMsg?.includes("email")) {
+      emailError = errorMsg;
+    } else {
+      confirmError = errorMsg;
+    }
+  }
+}
+---
+
+<form 
+  hx-post='/new-password/reset'
+>
+{ !success &&
+    <input type="hidden" name="token" value={token} />
+    <input type="hidden" name="email" value={email} />
+    <BasicInput
+      type="email"
+      label="email"
+      name="email"
+      disabled={true}
+      value={email}
+    />
+    <BasicInput
+      type="password"
+      label="password"
+      name="password"
+    />
+    <BasicInput
+      type="password"
+      label="confirm password"
+      name="confirmPassword"
+    />
+    
+    <div class="mt-16">
+      <Primary type="submit" label="Reset"/>
+    </div>
+  }
+
+  { success &&
+    <div class="mt-4">
+     <a href="/login" class="font-bold text-xl text-blue-500 ">Login</a>
+    </div>
+
+  }
+      
+  <div class="mt-16">
+    <p class="text-red-500">{confirmError}</p>
+    <p class="text-green-500">{success}</p>
+  </div>
+
+  
+</form>

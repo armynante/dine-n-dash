@@ -1,0 +1,73 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import BasicInput from "../../components/inputs/BasicInput.astro";
+import Primary from "../../components/Buttons/Primary.astro";
+import axios from "axios";
+
+const API_URL = import.meta.env.API_URL;
+
+let errorMsg = "";
+let emailError = "";
+let confirmError = "";
+let success = "";
+
+
+if ( Astro.request.method === "POST" ) {
+  const formData = await Astro.request.formData();
+  const email = formData.get( "email" );
+  
+  try {
+    const { data } = await axios.post( `${API_URL}/auth/reset-password`,{
+      email,
+    });
+
+    success = data?.message;
+
+  } catch (error) {
+    // console.log(error);
+    // @ts-ignore
+    errorMsg = error?.response?.data?.message;
+    console.log(errorMsg);
+    if (errorMsg?.includes("email")) {
+      emailError = errorMsg;
+    } else {
+      confirmError = errorMsg;
+    }
+  }
+}
+---
+
+<form 
+  hx-post='/forgot-password/reset'
+>
+{ !success &&
+    <BasicInput
+      type="email"
+      label="email"
+      name="email"
+      placeholder="email"
+      error={emailError}
+    />
+    
+    <div class="mt-16">
+      <Primary
+      type="submit" 
+      label="Try again"
+      />
+      </div>
+  }
+
+  { success &&
+    <div class="mt-16">
+     <a href="/login" class="font-bold text-xl text-blue-500 ">Login</a>
+    </div>
+
+  }
+      
+  <div class="mt-16">
+    <p class="text-red-500">{confirmError}</p>
+    <p class="text-green-500">{success}</p>
+  </div>
+
+  
+</form>

@@ -1,0 +1,84 @@
+---
+// @ts-nocheck
+import BasicInput from "../../../components/inputs/BasicInput.astro";
+import Secondary from "../../../components/Buttons/Secondary.astro";
+import Primary from "../../../components/Buttons/Primary.astro";
+import DashLayout from "../../../layouts/DashLayout.astro";
+
+import axios from "axios";
+
+const CONTROLLER_HOST = import.meta.env.CONTROLLER_HOST;
+
+let errorMsg = "";
+let successMsg = "";
+let status = "";
+let running = false;
+let interval = "";
+
+if ( Astro.request.method === "POST" ) {
+
+  try {
+    const formData = await Astro.request.formData();
+    const run = formData.get( "run" );
+    interval = formData.get( "interval" );
+    const { data } = await axios({
+      url: `${CONTROLLER_HOST}/setCron`,
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token").value
+      },
+      data: {
+        interval,
+        run: run === "on" ? true : false
+      }
+    });
+
+    status = data.data.status;
+    running = status === "Stopped 🛑" ? false : true;
+    interval = data.data.interval;
+    successMsg = data?.message || "Successfully updated";
+
+  } catch (error) {
+    console.log(error);
+    errorMsg = error?.response?.data?.message || "Something went wrong";
+  }
+}
+---
+
+<form 
+  hx-put='/dashboard/controller/update'
+>
+  <BasicInput type="text" name="status" label="status" value={status} disabled={true} />
+  
+  <!-- TOGGLE SERVICE ON OR OFF -->
+  <div class="flex flex-row items-center space-x-4 mb-4">
+    <label for="start" class="text-xl font-bold">
+      Run Service
+    </label>
+    <input type="checkbox" name="start" id="start" checked={running} />
+  </div>
+  
+  <!-- SET INTERVAL -->
+  <BasicInput
+    type="number"
+    name="interval"
+    label="interval in seconds"
+    value={interval}
+    />
+
+  <Primary type="submit" label="Save"/>
+
+  {errorMsg && (
+    <div class="text-red-500 text-xl font-bold">
+      {errorMsg}
+    </div>
+  )}
+
+  {successMsg && (
+    <div class="text-green-500 text-xl font-bold">
+      {successMsg}
+    </div>
+  )}
+  
+</form>

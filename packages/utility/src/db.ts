@@ -23,7 +23,12 @@ export class Database {
             .single();
 
         if (error) {
-            throw error;
+            console.error(error.code);
+            if (error.code === 'PGRST116') {
+                throw new Error('No user found with that email');
+            }
+            console.error(error);
+            throw new Error('An error occurred while fetching user');
         }
 
         return data;

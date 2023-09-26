@@ -1,4 +1,6 @@
 ---
-const { currentPath, link, text } = Astro.props
+const { currentPath, link, text, hidden } = Astro.props as { 
+  currentPath: string, link: string, text: string, hidden: boolean 
+}
 ---
-<a href={link} class={`text-gray-900 uppercase hover:text-blue-400 ${'/' + currentPath === link && 'underline font-bold'}`}>{text}</a>
+<a href={link} class={`${hidden ? "hidden" : ""} text-gray-900 uppercase hover:text-blue-400 ${'/' + currentPath === link && 'underline font-bold'}`}>{text}</a>
