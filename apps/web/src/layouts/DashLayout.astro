@@ -12,7 +12,7 @@ const currentPath = pathname.slice(1); // remove the first "/"
  
 ---
 <!doctype html>
-<html lang="en" class="h-full min-h-full max-h-full text-base antialiased">
+<html lang="en" class="min-h-screen h-screen flex text-base w-full w-screen antialiased">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
@@ -25,19 +25,36 @@ const currentPath = pathname.slice(1); // remove the first "/"
 		<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;400;900&display=swap" rel="stylesheet">
 		<title>{title}</title>
 	</head>
-	<body class="flex h-full flex-col pb-1 mx-12 min-h-full max-h-full" hx-ext="loading-states">
-		<nav class="flex justify-between items-center p-8 mb-6 ">
+	<body class="flex h-screen flex-col pb-1 mx-1 md:mx-12 " hx-ext="loading-states">
+		<nav class="md:visible hidden md:flex justify-between items-center p-8 mb-6 ">
 			<div class="flex items-center space-x-2">
-				<img src="/logo.jpeg" class="w-10 h-10"/>
-				<a href="/" class="text-gray-900 text-2xl capitalize">Dine-N-Dash</a>
+				<a href="/" class="text-gray-900 text-2xl capitalize flex items-center space-x-2">
+					<img src="/logo.jpeg" class="w-10 h-10"/>
+					<span>Dine-N-Dash</span>
+				</a>
 			</div>
 			<div class="flex justify-end space-x-7 text-2xl">
-				<NavLink currentPath={currentPath} link="/dashboard" text="Dashboard" />
-				<NavLink currentPath={currentPath} link="/dashboard/settings" text="Settings" />
-				<NavLink currentPath={currentPath} link="/dashboard/controller" text="Controller" />
+				<NavLink currentPath={currentPath} link="/dashboard" text="dashboard" />
+				<NavLink currentPath={currentPath} link="/dashboard/settings" text="settings" />
+				<NavLink currentPath={currentPath} link="/dashboard/controller" text="controller" />
+				<NavLink currentPath={currentPath} link="/logout" text="logout" />
 			</div>
 		</nav>
-		<div class="flex h-full flex-col ">
+		
+		<nav class="md:hidden flex justify-between items-center p-8 mb-6 ">
+			<div class="flex items-center space-x-2">
+				<a href="/" class="">
+					<img src="/logo.jpeg" class="w-6 h-6"/>
+				</a>
+			</div>
+			<div class="flex justify-end space-x-7 text-lg">
+				<NavLink currentPath={currentPath} link="/dashboard" text="dashboard" />
+				<NavLink currentPath={currentPath} link="/dashboard/settings" text="settings" />
+				<NavLink currentPath={currentPath} link="/dashboard/controller" text="controller" />
+				<NavLink currentPath={currentPath} link="/logout" text="logout" />
+			</div>
+		</nav>
+		<div class="flex h-full flex-col">
 			<slot />
 		</div>
 	</body>

@@ -113,11 +113,9 @@ app.post('/setCron', verifyToken, async (req: Request, res: Response) => {
     }
 
     if (run) {
-        console.log('Starting cron task', run);
         await runQueue();
         CRON_RUNNING = true;
     } else {
-        console.log('Stopping cron task', run);
         task.stop();
         CRON_RUNNING = false;
     }
