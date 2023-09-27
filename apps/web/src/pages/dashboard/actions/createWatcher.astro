@@ -3,7 +3,7 @@
 import axios from 'axios';
 import WatcherItem from '../../../components/lists/WatcherItem.astro';
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let watcher;
 let restaurant: any;
@@ -47,7 +47,7 @@ if ( Astro.request.method === "POST" ) {
     
   try {
     const { data } = await axios({
-      url: `${API_URL}/watchers`,
+      url: `${PUBLIC_API_URL}/watchers`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -3,7 +3,7 @@
 import axios from 'axios';
 import Favorite from '../../../components/lists/FavoriteItem.astro';
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let favorite;
 let key;
@@ -18,7 +18,7 @@ if ( Astro.request.method === "POST" ) {
   favorite = JSON.parse(restaurant);
   try {
     const { data } = await axios({
-      url: `${API_URL}/favorites`,
+      url: `${PUBLIC_API_URL}/favorites`,
       method: "POST",
       data: {
         restaurant: favorite

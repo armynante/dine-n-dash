@@ -7,19 +7,16 @@ import DashLayout from "../../../layouts/DashLayout.astro";
 
 import axios from "axios";
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
-let errorMsg = false;
-let emailError = false;
-let confirmError = false;
-let success = false;
+
 let phoneNumber = "";
 let email = "";
 let verified = "";
 
 try {
   const { data } = await axios({
-    url: `${API_URL}/users`,
+    url: `${PUBLIC_API_URL}/users`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -31,8 +28,6 @@ try {
   email = data?.user?.email;
   verified = data?.user?.verified;
   
-  console.log(phoneNumber, email);
-
   success = data.message || "Success";
 } catch (error) {
   console.log(error);

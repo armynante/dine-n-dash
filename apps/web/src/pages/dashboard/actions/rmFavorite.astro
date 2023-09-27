@@ -2,7 +2,7 @@
 import axios from 'axios';
 import AddFavorite from '../../../components/lists/NotFavoriteItem.astro';
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let favorite;
 let restaurant: any
@@ -21,7 +21,7 @@ if ( Astro.request.method === "DELETE" ) {
   console.log(restaurant);
   try {
     const { data } = await axios({
-      url: `${API_URL}/favorites/${restaurant.siteId}`,
+      url: `${PUBLIC_API_URL}/favorites/${restaurant.siteId}`,
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

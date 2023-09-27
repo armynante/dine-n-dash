@@ -4,7 +4,7 @@ import BasicInput from "../../components/inputs/BasicInput.astro";
 import Primary from "../../components/Buttons/Primary.astro";
 import axios from "axios";
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let errorMsg = false;
 let emailError = false;
@@ -18,7 +18,7 @@ if ( Astro.request.method === "POST" ) {
   const confirm = data.get( "confirm" )
   
   try {
-    const resp = await axios.post( `${API_URL}/auth/register`,{
+    const resp = await axios.post( `${PUBLIC_API_URL}/auth/register`,{
       email,
       password,
       confirm

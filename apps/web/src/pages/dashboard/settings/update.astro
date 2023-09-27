@@ -2,7 +2,7 @@
 import BasicInput from "../../../components/inputs/BasicInput.astro";
 import Primary from "../../../components/Buttons/Primary.astro";
 import axios, { AxiosError, type AxiosResponse } from "axios";
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 
 let errorMsg = false as unknown as string | null | Error;
@@ -24,7 +24,7 @@ if ( Astro.request.method === "PUT" ) {
   
   try {
     const { data } = await axios({
-      url: `${API_URL}/users`,
+      url: `${PUBLIC_API_URL}/users`,
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

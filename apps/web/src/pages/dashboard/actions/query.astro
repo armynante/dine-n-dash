@@ -3,7 +3,7 @@ import NotFavorite from "../../../components/lists/NotFavoriteItem.astro";
 import Favorite from "../../../components/lists/FavoriteItem.astro";
 import axios from "axios";
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let restaurants = [];
 
@@ -11,7 +11,7 @@ if ( Astro.request.method === "POST" ) {
   const data = await Astro.request.formData();
   const query = data.get("query");
   try {
-    const resp = await axios.get(`${API_URL}/resy/search?venueName=${query}`, {
+    const resp = await axios.get(`${PUBLIC_API_URL}/resy/search?venueName=${query}`, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": Astro.cookies.get("token")?.value

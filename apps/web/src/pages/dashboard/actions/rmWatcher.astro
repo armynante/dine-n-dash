@@ -1,13 +1,10 @@
 ---
 // @ts-nocheck
 import axios from 'axios';
-import WatcherItem from '../../../components/lists/WatcherItem.astro';
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let watcherId;
-
-console.log(Astro.request.method);
 
 if ( Astro.request.method === "DELETE" ) {
   const data = await Astro.request.formData();
@@ -18,7 +15,7 @@ if ( Astro.request.method === "DELETE" ) {
     
   try {
     const { data } = await axios({
-      url: `${API_URL}/watchers/${watcherId}`,
+      url: `${PUBLIC_API_URL}/watchers/${watcherId}`,
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

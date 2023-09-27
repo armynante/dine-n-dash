@@ -4,7 +4,7 @@ import BasicInput from "../../components/inputs/BasicInput.astro";
 import Primary from "../../components/Buttons/Primary.astro";
 import axios from "axios";
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let errorMsg = "";
 let emailError = "";
@@ -24,7 +24,7 @@ if ( Astro.request.method === "POST" ) {
   const confirmPassword = formData.get( "confirmPassword" );
   
   try {
-    const { data } = await axios.post( `${API_URL}/auth/reset-password/verify`,{
+    const { data } = await axios.post( `${PUBLIC_API_URL}/auth/reset-password/verify`,{
       email,
       token,
       password,

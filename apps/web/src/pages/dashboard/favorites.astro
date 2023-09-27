@@ -4,13 +4,13 @@ import Favorite from '../../components/lists/FavoriteItem.astro'
 import axios from 'axios'
 import Loader from '../../components/Loader.astro'
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.API_URL;
 
 let faves = [];
 
 if ( Astro.request.method === "GET" ) {
   try {
-    const resp = await axios.get(`${API_URL}/favorites`, {
+    const resp = await axios.get(`${PUBLIC_API_URL}/favorites`, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": Astro.cookies.get("token")?.value

@@ -5,13 +5,13 @@ import Watcher from '../../components/lists/WatcherItem.astro'
 import axios from 'axios'
 import Loader from '../../components/Loader.astro'
 
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 let watchers = [];
 
 if ( Astro.request.method === "GET" ) {
   try {
-    const resp = await axios.get(`${API_URL}/watchers`, {
+    const resp = await axios.get(`${PUBLIC_API_URL}/watchers`, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": Astro.cookies.get("token").value

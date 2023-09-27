@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import BasicInput from "../../components/inputs/BasicInput.astro";
 import Primary from "../../components/Buttons/Primary.astro";
 import axios from "axios";
-const API_URL = import.meta.env.API_URL;
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
 
 let errorMsg = false;
@@ -11,16 +11,16 @@ let success = false;
 
 if ( Astro.request.method === "POST" ) {
   const data = await Astro.request.formData();
-  const password = data.get( "password" ).trim();
-  const email = data.get( "email" ).trim();
+  const password = data.get( "password" )
+  const email = data.get( "email" )
   
   try {
     const { data } = await axios({
-      url: `${API_URL}/resy/login`,
+      url: `${PUBLIC_API_URL}/resy/login`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": Astro.cookies.get("token").value
+        "Authorization": Astro.cookies.get("token")?.value
       },
       data: {
         email,
@@ -31,6 +31,7 @@ if ( Astro.request.method === "POST" ) {
     success = data.message || "Success";
   } catch (error) {
     console.log(error);
+    //@ts-ignore
     errorMsg = error?.response?.data?.message || "Something went wrong";
   }
 }
