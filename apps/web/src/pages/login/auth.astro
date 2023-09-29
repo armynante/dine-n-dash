@@ -13,9 +13,6 @@ let confirmError = false;
 let success = false;
 
 if ( Astro.request.method === "POST" ) {
-  console.log("post");
-  console.log(Astro.request);
-  console.log(PUBLIC_API_URL);
   const data = await Astro.request.formData();
   const password = data.get( "password" ).trim();
   const email = data.get( "email" ).trim();
@@ -44,7 +41,7 @@ if ( Astro.request.method === "POST" ) {
   } catch (error) {
     console.log(error);
     errorMsg = error.response.data.message;
-    if (errorMsg.includes("user found")) {
+    if (errorMsg?.includes("user found")) {
       emailError = errorMsg;
     } else {
       emailError = errorMsg;

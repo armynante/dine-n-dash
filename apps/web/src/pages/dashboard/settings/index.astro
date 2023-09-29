@@ -13,6 +13,7 @@ const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 let phoneNumber = "";
 let email = "";
 let verified = "";
+let errorMsg = "";
 
 try {
   const { data } = await axios({

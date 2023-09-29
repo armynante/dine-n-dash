@@ -7,9 +7,9 @@ import Table from 'cli-table';
 import { AuthHelpers, Types } from 'diner-utilities';
 
 const HOST = process.env.HOST || 'https://nxy3qkvysgdtkjefwu3vjggn5i0qjgsp.lambda-url.us-east-1.on.aws';
-const CONTROLLER_HOST = process.env.CONTROLLER_HOST || 'http://ec2-52-202-82-154.compute-1.amazonaws.com';
+const PUBLIC_CONTROLLER_HOST = process.env.PUBLIC_CONTROLLER_HOST || 'http://ec2-52-202-82-154.compute-1.amazonaws.com';
 
-console.info('Controller host', CONTROLLER_HOST);
+console.info('Controller host', PUBLIC_CONTROLLER_HOST);
 
 const clearWatch = async () => {
     const token = await AuthHelpers.getToken() as string;
@@ -115,7 +115,7 @@ const cronController = async () => {
     if (cron === 'status') {
         const spinner = ora('Fetching cron status 🔍').start();
         const { data:response} = await axios
-            .get(`${CONTROLLER_HOST}/status`,
+            .get(`${PUBLIC_CONTROLLER_HOST}/status`,
                 {
                     headers: {
                         Authorization: token
@@ -134,7 +134,7 @@ const cronController = async () => {
     if (cron === 'run') {
         const spinner = ora('Running cron now 🔍').start();
         const { data:response} = await axios
-            .post(`${CONTROLLER_HOST}/start`,
+            .post(`${PUBLIC_CONTROLLER_HOST}/start`,
                 null,
                 {
                     headers: {
@@ -150,7 +150,7 @@ const cronController = async () => {
     if (cron === 'stop') {
         const spinner = ora('Stopping cron 🔍').start();
         const { data:response} = await axios
-            .post(`${CONTROLLER_HOST}/stop`,
+            .post(`${PUBLIC_CONTROLLER_HOST}/stop`,
                 null,
                 {
                     headers: {
@@ -175,7 +175,7 @@ const cronController = async () => {
 
         const spinner = ora('Scheduling cron 🔍').start();
         const { data:response} = await axios
-            .post(`${CONTROLLER_HOST}/setCron`,
+            .post(`${PUBLIC_CONTROLLER_HOST}/setCron`,
                 { schedule },
                 {
                     headers: {

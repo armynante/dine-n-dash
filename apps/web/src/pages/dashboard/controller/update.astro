@@ -7,7 +7,7 @@ import DashLayout from "../../../layouts/DashLayout.astro";
 
 import axios from "axios";
 
-const CONTROLLER_HOST = import.meta.env.CONTROLLER_HOST;
+const PUBLIC_CONTROLLER_HOST = import.meta.env.PUBLIC_CONTROLLER_HOST;
 
 let errorMsg = "";
 let successMsg = "";
@@ -22,7 +22,7 @@ if ( Astro.request.method === "POST" ) {
     const run = formData.get( "run" );
     interval = formData.get( "interval" );
     const { data } = await axios({
-      url: `${CONTROLLER_HOST}/setCron`,
+      url: `${PUBLIC_CONTROLLER_HOST}/setCron`,
       method: "post",
       headers: {
         "Content-Type": "application/json",

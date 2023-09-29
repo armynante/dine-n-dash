@@ -217,40 +217,51 @@ router.post('/reset-password/verify', async (req: Request, res: Response) => {
 router.post('/login', async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    console.log('Logging in user');
+    console.log('Logging in that user');
 
     try {
+        console.log('email to login: ', email, password);
         // Fetch the user's hashed password from the database based on the username
-        const { data: user } = await db
+        const { data: user, error:userError } = await db
             .client
             .from('user')
             .select()
             .eq('email', email)
             .single();
+
+        if (userError) {
+            throw new Error(userError.message);
+        }
             
         if (!user) {
             return res
                 .status(401)
                 .json({ message: 'No user found' });
         }
+
+        console.log('Got user:', user);
         // Compare the provided password with the stored hashed password
         const passwordMatch = await bcrypt.compare(password, user.password);
 
+        console.log('passwordMatch', passwordMatch);
         if (!passwordMatch) {
             return res
                 .status(401)
                 .json({ message: 'Invalid username or password' });
         }
 
+        console.log('user.verified');
         const token = jwt.sign(user, secretKey, { expiresIn: '365d' });
 
-        res.set('HX-Redirect', '/dashboard');
+        // res.set('HX-Redirect', '/dashboard');
+        
 
         res.json({ message: 'Login successful', token, user });
     } catch (error) {
         console.error(error);
+        const err = error as Error;
         res.status(500).json({
-            error: 'An error occurred while processing the login request',
+            error: err.message || 'An error occurred while processing the login request',
         });
     }
 });

@@ -7,7 +7,7 @@ import DashLayout from "../../../layouts/DashLayout.astro";
 
 import axios from "axios";
 
-const CONTROLLER_HOST = import.meta.env.CONTROLLER_HOST;
+const PUBLIC_CONTROLLER_HOST = import.meta.env.PUBLIC_CONTROLLER_HOST;
 
 let errorMsg = "";
 let successMsg = "";
@@ -19,7 +19,7 @@ if ( Astro.request.method === "GET" ) {
 
   try {
     const { data } = await axios({
-      url: `${CONTROLLER_HOST}/status`,
+      url: `${PUBLIC_CONTROLLER_HOST}/status`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
