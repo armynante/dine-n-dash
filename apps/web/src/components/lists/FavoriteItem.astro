@@ -32,8 +32,8 @@ class=`even:bg-slate-100 bg-white outline-1 outline mt-[1px]`
           <div class="text-md">
             <form
               hx-post="/dashboard/actions/addWatcher"
-              hx-target="#favoritesList"
-              hx-swap="afterbegin"
+              hx-target="closest li"
+              hx-swap="beforebegin"
             >
               <input type="hidden" name="restaurant" value={JSON.stringify(restaurant)} />
               <Tiny label="Watch" type="submit"/>

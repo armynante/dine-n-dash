@@ -14,7 +14,6 @@ if ( Astro.request.method === "DELETE" ) {
   restaurant = data.get("restaurant");
   key = data.get("key");
   total = data.get("total");
-    restaurant = JSON.parse(restaurant.toString());
   if (restaurant) {
     restaurant = JSON.parse(restaurant);
   }
