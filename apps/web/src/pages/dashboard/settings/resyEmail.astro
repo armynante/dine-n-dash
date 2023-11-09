@@ -1,0 +1,45 @@
+---
+import BasicInput from "../../../components/inputs/BasicInput.astro";
+import Primary from "../../../components/Buttons/Primary.astro";
+import axios, { AxiosError, type AxiosResponse } from "axios";
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
+
+
+let errorMsg = false as unknown as string | null | Error;
+let success = false;
+let resyEmail = "";
+
+console.log("Astro.request.method");
+
+
+if ( Astro.request.method === "PUT" ) {
+  const formData = await Astro.request.formData();
+  resyEmail = formData.get("resyEmail") as string;
+  try {
+    const { data } = await axios({
+      url: `${PUBLIC_API_URL}/users`,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token")?.value
+      },
+      data: {
+        resyEmail
+      }
+    });
+    success = data.message || "Success";
+    resyEmail = data.data?.email;
+  } catch (error) {
+    console.log(error);
+    // @ts-ignore
+    errorMsg = error?.response?.data?.message || "Something went wrong";
+  }
+}
+
+---
+<form hx-put='/dashboard/settings/resyEmail'>
+  <BasicInput type="resy" name="resy" label="Resy Email" value={resyEmail} disabled={false} />
+  <Primary type="submit" label="Save" />
+  {errorMsg && <p class="text-red-500">{errorMsg}</p>}
+  {success && <p class="text-green-500">{success}</p>}
+</form>

@@ -14,6 +14,10 @@ let phoneNumber = "";
 let email = "";
 let verified = "";
 let errorMsg = "";
+let resyEmail = "";
+let resyToken = "";
+let resyPass = "";
+let success = "";
 
 try {
   const { data } = await axios({
@@ -28,6 +32,8 @@ try {
   phoneNumber = data?.user?.phoneNumber;
   email = data?.user?.email;
   verified = data?.user?.verified;
+  resyEmail = data?.user?.resyEmail;
+  resyToken = data?.user?.resyToken;
   
   success = data.message || "Success";
 } catch (error) {
@@ -39,30 +45,45 @@ try {
 <DashLayout title="settings">
   <main class="px-48 pt-12">
     <div class="grid grid-cols-12 gap-24 ">
-      <div class="col-span-8 outline-1 outline">
+      <div class="col-span-6 outline-1 outline">
         <div class="flex flex-col px-40 md:py-12 sm:px-10 space-y-14">
           <h1 class="text-4xl font-bold uppercase">
-            Settings
+            Basic Settings
           </h1>
 
-          <form 
-            hx-put='/dashboard/settings/update'
-          >
-            <BasicInput type="email" name="email" label={email} value={email} disabled={true} reminder="need to reset?" link={"/dashboard/settings/reset"} />
-            <BasicInput type="text" name="verified" label={verified} value={verified} disabled={true} reminder="resend verification?" link={"/dashboard/settings/verify"} />
-            <BasicInput
-              type="phone"
-              name="phoneNumber"
-              label="phone number"
-              value={phoneNumber}
-              mask="(999) 999-9999"
-            />
+          <form hx-put='/dashboard/settings/update'>
+            <BasicInput type="email" name="email" label="Account email" value={email} disabled={true}
+              reminder="need to reset?" link={"/dashboard/settings/reset"} />
+            <BasicInput type="text" name="verified" label="Verified" value={verified} disabled={true}
+              reminder="resend verification?" link={"/dashboard/settings/verify"} />
 
-            
+            <BasicInput type="phone" name="phoneNumber" label="phone number" value={phoneNumber}
+              mask="(999) 999-9999" />
 
-            <Primary type="submit" label="Save"/>
-            
+            </br>
+            <Primary type="submit" label="Save" />
+
           </form>
+        </div>
+      </div>
+      <div class="col-span-6 outline-1 outline">
+        <div class="flex flex-col px-40 md:py-12 sm:px-10 space-y-14">
+          <h1 class="text-4xl font-bold uppercase">
+            Resy Settings
+          </h1>
+
+          <form hx-put='/dashboard/settings/resyEmail'>
+            <input type="hidden" name="email" value={email} />
+            <BasicInput name="resyEmail" label="Resy Email" value={resyEmail} disabled={false} />
+            <Primary type="submit" label="Save" />
+          </form>
+          <form hx-post='/dashboard/settings/resyAuth' class="">
+            <BasicInput type="resyToken" name="resy token" label="Resy Token" value={resyToken} disabled={true} />
+            <BasicInput type="resyPass" name="resyPass" label="Resy Password" value={resyPass} disabled={false} />
+            <input type="hidden" name="resyEmail" value={resyEmail} />
+            <Primary type="submit" label="Authenticate" />
+          </form>
+
         </div>
       </div>
       <!-- <div class="col-span-6 outline-1 outline">

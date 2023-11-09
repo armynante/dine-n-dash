@@ -1,0 +1,50 @@
+---
+import BasicInput from "../../../components/inputs/BasicInput.astro";
+import Primary from "../../../components/Buttons/Primary.astro";
+import axios, { AxiosError, type AxiosResponse } from "axios";
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
+
+
+let errorMsg = false as unknown as string | null | Error;
+let success = false;
+let resyEmail = "";
+let resyPass = "";
+let resyToken = "";
+
+console.log("Astro.request.method");
+
+
+if ( Astro.request.method === "POST" ) {
+  const formData = await Astro.request.formData();
+  try {
+    const { data } = await axios({
+      url: `${PUBLIC_API_URL}/resy/login`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": Astro.cookies.get("token")?.value
+      },
+      data: {
+        password: formData.get("resyPass"),
+        email: formData.get("resyEmail")
+      }
+    });
+    success = data.message || "Success";
+    resyToken = data?.data?.token;
+  } catch (error) {
+    console.log(error);
+    // @ts-ignore
+    errorMsg = error?.response?.data?.message || "Something went wrong";
+  }
+}
+
+---
+<form hx-post='/dashboard/settings/resyAuth'>
+  <BasicInput type="resyToken" name="resy token" label="Resy Token" value={resyToken} disabled={true} />
+  <BasicInput type="resyPass" name="resyPass" label="Resy Password" value={resyPass} disabled={false} />
+  <input type="hidden" name="resyEmail" value={resyEmail} />
+  <Primary type="submit" label="Authenticate" />
+  {errorMsg && <p class="text-red-500">{errorMsg}</p>}
+  {success && <p class="text-green-500">{success}</p>}
+</form>
+
