@@ -48,11 +48,11 @@ router.post('/login', verifyToken, async (req: Request, res: Response) => {
         });
         console.log('User updated');
         const token = jwt.sign(updatedUser, secretKey, { expiresIn: '365d' });
-
         res.status(200).send({
-            token,
-            user: updatedUser,
-            message: 'successfully authenticated with Resy',
+            message: 'Successfully authenticated with Resy',
+            data: {
+                token,
+            }
         });
     } catch (error) {
         console.error(error);
