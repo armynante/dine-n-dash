@@ -15,7 +15,7 @@ RUN pnpm tsc -b
 WORKDIR /diner-mono/apps/server
 # Change to the server directory
 
-EXPOSE 8080
+EXPOSE 4000
 
 # Use nodemon to run the server, watching the TypeScript files
 CMD ["nodemon", "./dist/index.js"]
