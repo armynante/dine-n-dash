@@ -12,6 +12,8 @@ COPY . .
 RUN pnpm recursive install
 RUN pnpm tsc -b
 
+RUN ls -la
+
 WORKDIR /diner-mono/apps/server
 # Change to the server directory
 
