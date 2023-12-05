@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: controller.dinedash.net
+    http:
+      paths:
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: controller
+              port:
+                number: 80
+  - host: api.dinedash.net
+    http:
+      paths:
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: server
+              port:
+                number: 80

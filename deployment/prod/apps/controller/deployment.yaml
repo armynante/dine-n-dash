@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-deployment
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: controller
+  template:
+    metadata:
+      labels:
+        app: controller
+    spec:
+      containers:
+      - name: diner-controller
+        image: registry.digitalocean.com/humidresearch/diner-controller:0.2  # Specify your Controller service Docker image
+        envFrom:
+         - secretRef:
+             name: prod-secrets
+        ports:
+        - containerPort: 8000  # Adjust if your Controller service listens on a different port
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
