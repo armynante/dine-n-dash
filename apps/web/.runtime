@@ -1,0 +1,2 @@
+PUBLIC_API_URL=http://server.default.svc.cluster.local
+PUBLIC_CONTROLLER_HOST=http://controller.default.svc.cluster.local

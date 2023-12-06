@@ -12,7 +12,7 @@ COPY ./apps/web ./
 
 RUN pnpm install
 # pass env variables to build
-RUN export $(cat .env.runtime) && pnpm run build
+RUN export $(cat .runtime) && pnpm run build
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
