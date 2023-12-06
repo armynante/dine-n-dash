@@ -1,4 +1,4 @@
-name: Build and Deploy to DigitalOcean
+name: Deploy to DigitalOcean Kubernetes
 
 on:
   push:
@@ -12,70 +12,59 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
     - name: Log in to DigitalOcean Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: registry.digitalocean.com
-        username: ${{ secrets.DIGITALOCEAN_REGISTRY_USERNAME }}
-        password: ${{ secrets.DIGITALOCEAN_REGISTRY_TOKEN }}
+      run: doctl registry login --expiry-seconds 1200
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
     # Build and Push Docker image for each service
     - name: Build and Push Docker image for Controller
-      uses: docker/build-push-action@v2
-      with:
-        context: ./apps/controller
-        file: ./apps/controller/Dockerfile
-        push: true
-        tags: registry.digitalocean.com/humidresearch/controller:${{ github.sha }}
+      run: |
+        docker build -t registry.digitalocean.com/humidresearch/controller:${{ github.sha }} ./apps/controller
+        docker push registry.digitalocean.com/humidresearch/controller:${{ github.sha }}
 
     - name: Build and Push Docker image for Server
-      uses: docker/build-push-action@v2
-      with:
-        context: ./apps/server
-        file: ./apps/server/Dockerfile
-        push: true
-        tags: registry.digitalocean.com/humidresearch/server:${{ github.sha }}
+      run: |
+        docker build -t registry.digitalocean.com/humidresearch/server:${{ github.sha }} ./apps/server
+        docker push registry.digitalocean.com/humidresearch/server:${{ github.sha }}
 
     - name: Build and Push Docker image for Watcher
-      uses: docker/build-push-action@v2
-      with:
-        context: ./apps/watcher
-        file: ./apps/watcher/Dockerfile
-        push: true
-        tags: registry.digitalocean.com/humidresearch/watcher:${{ github.sha }}
+      run: |
+        docker build -t registry.digitalocean.com/humidresearch/watcher:${{ github.sha }} ./apps/watcher
+        docker push registry.digitalocean.com/humidresearch/watcher:${{ github.sha }}
 
     - name: Build and Push Docker image for Web
-      uses: docker/build-push-action@v2
-      with:
-        context: ./apps/web
-        file: ./apps/web/Dockerfile
-        push: true
-        tags: registry.digitalocean.com/humidresearch/web:${{ github.sha }}
+      run: |
+        docker build -t registry.digitalocean.com/humidresearch/web:${{ github.sha }} ./apps/web
+        docker push registry.digitalocean.com/humidresearch/web:${{ github.sha }}
 
-    - name: Install doctl
-      uses: digitalocean/action-doctl@v2
-      with:
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    # Update Deployment Files
+    - name: Update deployment file for Controller
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/controller:'${TAG}'|' ./deployment/prod/apps/controller/deployment.yaml
+
+    - name: Update deployment file for Server
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/server:'${TAG}'|' ./deployment/prod/apps/server/deployment.yaml
+
+    - name: Update deployment file for Watcher
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/watcher:'${TAG}'|' ./deployment/prod/apps/watcher/deployment.yaml
+
+    - name: Update deployment file for Web
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yaml
 
     - name: Save DigitalOcean kubeconfig
-      run: doctl kubernetes cluster kubeconfig save your-cluster-name
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 do-nyc3-dine-n-dash-cluster
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-    # Update Kubernetes deployment for each service
-    - name: Update Kubernetes deployment for Controller
-      run: |
-        kubectl set image deployment/controller-deployment controller=registry.digitalocean.com/humidresearch/controller:${{ github.sha }} --record
+    # Deploy to Kubernetes
+    - name: Deploy Controller to Kubernetes
+      run: kubectl apply -f ./deployment/prod/apps/controller/deployment.yaml
 
-    - name: Update Kubernetes deployment for Server
-      run: |
-        kubectl set image deployment/server-deployment server=registry.digitalocean.com/humidresearch/server:${{ github.sha }} --record
+    - name: Deploy Server to Kubernetes
+      run: kubectl apply -f ./deployment/prod/apps/server/deployment.yaml
 
-    - name: Update Kubernetes deployment for Watcher
-      run: |
-        kubectl set image deployment/watcher-deployment watcher=registry.digitalocean.com/humidresearch/watcher:${{ github.sha }} --record
+    - name: Deploy Watcher to Kubernetes
+      run: kubectl apply -f ./deployment/prod/apps/watcher/deployment.yaml
 
-    - name: Update Kubernetes deployment for Web
-      run: |
-        kubectl set image deployment/web-deployment web=registry.digitalocean.com/humidresearch/web:${{ github.sha }} --record
+    - name: Deploy Web to Kubernetes
+      run: kubectl apply -f ./deployment/prod/apps/web/deployment.yaml
