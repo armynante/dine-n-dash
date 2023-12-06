@@ -38,9 +38,6 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-
-tsconfig.tsbuildinfo
-
 # System Files
 .DS_Store
 Thumbs.db
@@ -48,8 +45,6 @@ Thumbs.db
 .terraform/*
 
 *.env
- No newline at end of file
 # local env files
 .env*.local
-tsconfig.tsbuildinfo
-packages/resy/tsconfig.tsbuildinfo
+*.tsbuildinfo
