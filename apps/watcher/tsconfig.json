@@ -8,7 +8,8 @@
     "rootDir": "./src"
   },
   "references": [
-    { "path": "../../packages/utility" },
+    { "path": "../../packages/resy" },
+    { "path": "../../packages/utility" }
   ],
   "exclude": [
     "node_modules",
