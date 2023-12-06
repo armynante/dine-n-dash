@@ -1,5 +1,7 @@
 # Dockerfile
-FROM oven/bun:latest
+FROM node:18-bullseye-slim
+
+RUN npm install -g pnpm
 
 # Set working directory
 WORKDIR /diner-mono
@@ -8,9 +10,9 @@ COPY ./apps/web ./
 
 # install curl 
 
-RUN bun install
-
-RUN ls -la
+RUN pnpm install
+# pass env variables to build
+RUN export $(cat .env.runtime) && pnpm run build
 
 ENV HOST=0.0.0.0
 ENV PORT=4321
@@ -19,7 +21,7 @@ ENV PORT=4321
 EXPOSE 4321
 
 # Run the app
-CMD ["bun", "dev"]
+CMD ["node", "./dist/server/entry.mjs"]
 
 
 

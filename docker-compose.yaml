@@ -16,7 +16,7 @@ services:
     volumes:
       - ./apps/server:/diner-mono/apps/server
       - ./packages:/diner-mono/packages
-
+  
   controller:
     build:
       context: .
@@ -51,24 +51,22 @@ services:
       - ./apps/watcher:/diner-mono/apps/watcher
       - ./packages:/diner-mono/packages
 
-  # web:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/web/Dockerfile
-  #   restart: on-failure
-  #   ports:
-  #     - 4321:4321
-  #   env_file:
-  #     - .env
-  #   tty: true
-  #   stdin_open: true
-  #   volumes:
-  #     - ./apps/web/src:/diner-mono/src
-  #     - ./apps/web/static:/diner-mono/static
-  #     # node_modules is not mounted because it is installed in the container
-  #     # - ./apps/web/vite.config.js:/diner-mono/vite.config.js
-  #     # - ./apps/web/tsconfig.json:/diner-mono/tsconfig.json
-  #     # - ./apps/web/svelte.config.js:/diner-mono/svelte.config.js
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    restart: on-failure
+    ports:
+      - 4321:4321
+    tty: true
+    stdin_open: true
+    # volumes:
+      # - ./apps/web/src:/diner-mono/src
+      # - ./apps/web/static:/diner-mono/static
+      # node_modules is not mounted because it is installed in the container
+      # - ./apps/web/vite.config.js:/diner-mono/vite.config.js
+      # - ./apps/web/tsconfig.json:/diner-mono/tsconfig.json
+      # - ./apps/web/svelte.config.js:/diner-mono/svelte.config.js
 
   redis:
     image: redis:6.2-alpine

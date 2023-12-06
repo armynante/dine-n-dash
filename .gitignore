@@ -51,3 +51,4 @@ Thumbs.db
  No newline at end of file
 # local env files
 .env*.local
+tsconfig.tsbuildinfo
