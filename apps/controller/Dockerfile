@@ -9,8 +9,6 @@ WORKDIR /diner-mono
 
 COPY . .
 
-RUN pnpm fetch --prod
-
 RUN pnpm recursive install
 RUN pnpm tsc -b
 
