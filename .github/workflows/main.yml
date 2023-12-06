@@ -20,19 +20,19 @@ jobs:
     # Build and Push Docker image for each service
     - name: Build and Push Docker image for Controller
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/controller:${{ github.sha }} -f ./apps/controller/Dockerfile --push .
+        docker build -t registry.digitalocean.com/humidresearch/controller:${{ github.sha }} -f ./apps/controller/Dockerfile . --push
         
     - name: Build and Push Docker image for Server
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/server:${{ github.sha }} -f ./apps/server/Dockerfile --push .
+        docker build -t registry.digitalocean.com/humidresearch/server:${{ github.sha }} -f ./apps/server/Dockerfile . --push
 
     - name: Build and Push Docker image for Watcher
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/watcher:${{ github.sha }} -f ./apps/watcher/Dockerfile --push .
+        docker build -t registry.digitalocean.com/humidresearch/watcher:${{ github.sha }} -f ./apps/watcher/Dockerfile . --push
 
     - name: Build and Push Docker image for Web
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/web:${{ github.sha }} -f ./apps/web/Dockerfile --push .
+        docker build -t registry.digitalocean.com/humidresearch/web:${{ github.sha }} -f ./apps/web/Dockerfile . --push
 
     # Update Deployment Files
     - name: Update deployment file for Controller
