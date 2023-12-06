@@ -5,6 +5,16 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
+  - host: dinedash.net
+    http:
+      paths:
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: web
+              port:
+                number: 80
   - host: controller.dinedash.net
     http:
       paths:
