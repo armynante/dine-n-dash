@@ -6,10 +6,12 @@
     "moduleResolution": "NodeNext",
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
   },
   "exclude": [
     "node_modules",
     "dist"
+  ],
+  "references": [
+    { "path": "../../packages/utility" },
   ]
 }
