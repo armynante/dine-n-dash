@@ -9,8 +9,8 @@ WORKDIR /diner-mono
 
 COPY . .
 
-RUN pnpm recursive install
 RUN pnpm tsc -b
+RUN pnpm recursive install
 
 WORKDIR /diner-mono/apps/controller
 # Change to the server directory
