@@ -9,8 +9,8 @@
     "declaration": true,
   },
   "references": [
-    { "path": "../../packages/utility" },
-    { "path": "../../packages/resy" }
+    { "path": "../../packages/utility/tsconfig.json" },
+    { "path": "../../packages/resy/tsconfig.json" }
   ],
   "exclude": [
     "node_modules",
