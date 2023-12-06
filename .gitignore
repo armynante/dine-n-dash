@@ -52,3 +52,4 @@ Thumbs.db
 # local env files
 .env*.local
 tsconfig.tsbuildinfo
+packages/resy/tsconfig.tsbuildinfo
