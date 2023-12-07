@@ -48,3 +48,9 @@ Thumbs.db
 # local env files
 .env*.local
 *.tsbuildinfo
+apps/cli/tsconfig.tsbuildinfo
+apps/controller/tsconfig.tsbuildinfo
+apps/watcher/tsconfig.tsbuildinfo
+packages/resy/tsconfig.tsbuildinfo
+packages/utility/tsconfig.tsbuildinfo
+tools/deploy/tsconfig.tsbuildinfo
