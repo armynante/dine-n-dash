@@ -17,7 +17,7 @@ jobs:
     - name: Delete Untagged Images
       run: |
         REPO_NAMES=("diner-server" "diner-watcher" "diner-controller" "diner-web")
-        for REPO in $REPO_NAMES; do
+        for REPO in "${REPO_NAMES[@]}"; do
           echo "Deleting untagged images for $REPO"
           # Fetch the list of digests for untagged images
           DIGESTS=$(doctl registry repository list-manifests $REPO --no-header | awk '$NF == "[]" { print $0 }' |  tail -n 5 | awk '{ print $1 }')
