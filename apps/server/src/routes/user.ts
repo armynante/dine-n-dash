@@ -8,6 +8,8 @@ const router = Router() as Router;
 
 router.get('/', verifyToken, async (req, res) => {
     try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         const { token } = req;
         const user = await db.getUser(token?.email);
         const { data, error } = await db.client.from('user').select('*').eq('id', user.id).single();
