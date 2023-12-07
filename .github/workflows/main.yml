@@ -39,16 +39,24 @@ jobs:
 
     # Update Deployment Files
     - name: Update deployment file for Controller
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'|' ./deployment/prod/apps/controller/deployment.yaml
+      run: |
+        TAG=${{ github.sha }}
+        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'|' ./deployment/prod/apps/controller/deployment.yaml
 
     - name: Update deployment file for Server
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' ./deployment/prod/apps/server/deployment.yaml
+      run: |
+        TAG=${{ github.sha }}
+        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' ./deployment/prod/apps/server/deployment.yaml
 
     - name: Update deployment file for Watcher
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' ./deployment/prod/apps/watcher/deployment.yaml
+      run: |
+        TAG=${{ github.sha }}
+        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' ./deployment/prod/apps/watcher/deployment.yaml
 
     - name: Update deployment file for Web
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yaml
+      run: |
+        TAG=${{ github.sha }}
+        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yaml
 
     - name: Save DigitalOcean kubeconfig
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dine-n-dash-cluster
