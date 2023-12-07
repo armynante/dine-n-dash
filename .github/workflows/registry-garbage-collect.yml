@@ -2,7 +2,7 @@ name: Registry Garbage Collection
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs every day at midnight
+    - cron: '0 0 * * *'  # Runs every day at midnight
   workflow_dispatch:
 
 jobs:
@@ -14,5 +14,17 @@ jobs:
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
+    - name: Delete Untagged Images
+      run: |
+        REPO_NAME="humidresearch"  # Replace with your actual repository name
+        # Fetch the list of digests for untagged images
+        DIGESTS=$(doctl registry repository list-manifests $REPO_NAME --untagged --format Digest --no-header)
+        # Loop through and delete each untagged image
+        for DIGEST in $DIGESTS; do
+          doctl registry repository delete-manifest $REPO_NAME --digest "$DIGEST" --force
+        done
+      shell: bash
+
     - name: Garbage Collect Registry
       run: doctl registry garbage-collection start humidresearch --force
+

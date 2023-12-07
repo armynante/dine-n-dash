@@ -19,10 +19,11 @@ jobs:
     - name: Detect changes
       id: changes
       run: |
-        echo "::set-output name=server::$(git diff --quiet HEAD^ HEAD apps/server || echo true)"
-        echo "::set-output name=web::$(git diff --quiet HEAD^ HEAD apps/web || echo true)"
-        echo "::set-output name=controller::$(git diff --quiet HEAD^ HEAD apps/controller || echo true)"
-        echo "::set-output name=watcher::$(git diff --quiet HEAD^ HEAD apps/watcher || echo true)"
+        echo "::set-output name=server::$(git diff --quiet HEAD^ HEAD apps/server || echo 'true')"
+        echo "::set-output name=web::$(git diff --quiet HEAD^ HEAD apps/web || echo 'true')"
+        echo "::set-output name=controller::$(git diff --quiet HEAD^ HEAD apps/controller || echo 'true')"
+        echo "::set-output name=watcher::$(git diff --quiet HEAD^ HEAD apps/watcher || echo 'true')"
+      
 
     - name: Install doctl
       uses: digitalocean/action-doctl@v2
