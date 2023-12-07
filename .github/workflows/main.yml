@@ -54,6 +54,10 @@ jobs:
   
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
+      
+    - name: Set short SHA
+      id: short_sha
+      run: echo "::set-output name=sha_short::$(echo ${GITHUB_SHA} | head -c7)"
 
     - name: Build and Push Docker image for Controller
       uses: docker/build-push-action@v2
@@ -61,7 +65,7 @@ jobs:
         context: .
         file: ./apps/controller/Dockerfile
         push: true
-        tags: registry.digitalocean.com/humidresearch/diner-controller:${{ github.sha }}
+        tags: registry.digitalocean.com/humidresearch/diner-controller:${{ steps.short_sha.outputs.sha_short }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -71,7 +75,7 @@ jobs:
         context: .
         file: ./apps/server/Dockerfile
         push: true
-        tags: registry.digitalocean.com/humidresearch/diner-server:${{ github.sha }}
+        tags: registry.digitalocean.com/humidresearch/diner-server:${{ steps.short_sha.outputs.sha_short }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -81,7 +85,7 @@ jobs:
         context: .
         file: ./apps/watcher/Dockerfile
         push: true
-        tags: registry.digitalocean.com/humidresearch/diner-watcher:${{ github.sha }}
+        tags: registry.digitalocean.com/humidresearch/diner-watcher:${{ steps.short_sha.outputs.sha_short }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -91,7 +95,7 @@ jobs:
         context: .
         file: ./apps/web/Dockerfile
         push: true
-        tags: registry.digitalocean.com/humidresearch/diner-web:${{ github.sha }}
+        tags: registry.digitalocean.com/humidresearch/diner-web:${{ steps.short_sha.outputs.sha_short }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
