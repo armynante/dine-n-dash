@@ -24,7 +24,8 @@ jobs:
           # Loop through and delete each untagged image
           for DIGEST in $DIGESTS; do
             echo "Deleting $DIGEST from $REPO"
-            doctl registry repository delete-manifest $REPO "$DIGEST" --force
+            echo "doctl registry repository delete-manifest $REPO "$DIGEST" -f"
+            doctl registry repository delete-manifest $REPO "$DIGEST" -f
           done
         done
       shell: bash
