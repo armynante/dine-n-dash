@@ -20,25 +20,11 @@ jobs:
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 1200
 
-    - name: Delete old Controller images
-      run: |
-        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags diner-controller --format Tag --no-header | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-controller {} --force
-    
-    - name: Delete old Server images
-      run: |
-        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags diner-server --format Tag --no-header | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-server {} --force
-
-    - name: Delete old Watcher images
-      run: |
-        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags diner-watcher --format Tag --no-header | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-watcher {} --force
-
-    - name: Delete old Web images
-      run: |
-        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags diner-web --format Tag --no-header | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-web {} --force
+    - name: Remove old images from Container Registry
+      uses: ripplr-io/docr-image-remove@v1
+      with:
+        image_repository: image-repository # required
+        buffer_size: 5
 
     # Build and Push Docker image for each service
     - name: Build and Push Docker image for Controller
