@@ -18,7 +18,27 @@ jobs:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
-      run: doctl registry login --expiry-seconds 600
+      run: doctl registry login --expiry-seconds 1200
+
+    - name: Delete old Controller images
+      run: |
+        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
+        doctl registry repository list-tags humidresearch/diner-controller | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-controller {} --force
+    
+    - name: Delete old Server images
+      run: |
+        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
+        doctl registry repository list-tags humidresearch/diner-server | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-server {} --force
+
+    - name: Delete old Watcher images
+      run: |
+        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
+        doctl registry repository list-tags humidresearch/diner-watcher | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-watcher {} --force
+
+    - name: Delete old Web images
+      run: |
+        # List all tags, sort them in reverse order, skip the first 5, and delete the rest
+        doctl registry repository list-tags humidresearch/diner-web | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-web {} --force
 
     # Build and Push Docker image for each service
     - name: Build and Push Docker image for Controller
@@ -37,41 +57,51 @@ jobs:
       run: |
         docker build -t registry.digitalocean.com/humidresearch/diner-web:${{ github.sha }} -f ./apps/web/Dockerfile . --push
 
-    # Update Deployment Files
-    - name: Update deployment file for Controller
-      run: |
-        TAG=${{ github.sha }}
-        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'|' ./deployment/prod/apps/controller/deployment.yaml
+      # Update Deployment Files
+    - name: Update server deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yml
+    
+    - name: Update watcher deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/watcher/deployment.yml
+    
+    - name: Update controller deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/controller/deployment.yml
+    
+    - name: Update web deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/web/deployment.yml
 
-    - name: Update deployment file for Server
-      run: |
-        TAG=${{ github.sha }}
-        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' ./deployment/prod/apps/server/deployment.yaml
-
-    - name: Update deployment file for Watcher
-      run: |
-        TAG=${{ github.sha }}
-        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' ./deployment/prod/apps/watcher/deployment.yaml
-
-    - name: Update deployment file for Web
-      run: |
-        TAG=${{ github.sha }}
-        sed -i'' -e 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yaml
-
-    - name: Save DigitalOcean kubeconfig
+    - name: Save DigitalOcean kubeconfig with short-lived credentials
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dine-n-dash-cluster
-      env:
-        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-    # Deploy to Kubernetes
+      
+      # Deploy to Kubernetes
     - name: Deploy Controller to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/controller/deployment.yaml
-
+      
     - name: Deploy Server to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/server/deployment.yaml
-
+      
     - name: Deploy Watcher to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/watcher/deployment.yaml
-
+      
     - name: Deploy Web to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/web/deployment.yaml
+    
+    - name: Deploy to DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yml
+
+      # veryify deploy to Kubernetes
+    - name: Get Web Deployment Status
+      run: kubectl rollout status deployment/diner-web
+
+    - name: Get Controller Deployment Status
+      run: kubectl rollout status deployment/diner-controller
+
+    - name: Get Server Deployment Status
+      run: kubectl rollout status deployment/diner-server
+
+    - name: Get Watcher Deployment Status
+      run: kubectl rollout status deployment/diner-watcher
+      
+
+      
+      
