@@ -51,7 +51,7 @@ jobs:
       run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yaml
 
     - name: Save DigitalOcean kubeconfig
-      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 do-nyc3-dine-n-dash-cluster
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dine-n-dash-cluster
       env:
         DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
