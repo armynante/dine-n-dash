@@ -16,7 +16,7 @@ jobs:
     
     - name: Delete Untagged Images
       run: |
-        REPO_NAMES=("diner-server", "diner-watcher", "diner-controller", "diner-web")
+        REPO_NAMES=("diner-server" "diner-watcher" "diner-controller" "diner-web")
         for REPO in $REPO_NAMES; do
           echo "Deleting untagged images for $REPO"
           # Fetch the list of digests for untagged images
