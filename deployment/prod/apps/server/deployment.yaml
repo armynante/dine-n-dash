@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: diner-server
-        image: registry.digitalocean.com/humidresearch/diner-server:0.2  # Specify your API service Docker image
+        image: <IMAGE>  # Specify your API service Docker image
         envFrom:
          - secretRef:
              name: prod-secrets

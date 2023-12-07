@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: diner-controller
-        image: registry.digitalocean.com/humidresearch/diner-controller:0.2  # Specify your Controller service Docker image
+        image: <IMAGE>  # Specify your Controller service Docker image
         envFrom:
          - secretRef:
              name: prod-secrets

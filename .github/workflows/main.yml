@@ -118,7 +118,12 @@ jobs:
 
       # Update Deployment Files
     - name: Update server deployment file
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yaml
+      run: |
+        TAG=$(echo $GITHUB_SHA | head -c7)
+        echo "TAG: $TAG"
+        cat $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yaml
+        sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yaml
+        cat $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yaml
     
     - name: Update watcher deployment file
       run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/watcher/deployment.yaml
@@ -147,16 +152,16 @@ jobs:
 
       # veryify deploy to Kubernetes
     - name: Get Web Deployment Status
-      run: kubectl rollout status deployment/diner-web
+      run: kubectl rollout status -f ./deployment/prod/apps/web/deployment.yaml
 
     - name: Get Controller Deployment Status
-      run: kubectl rollout status deployment/diner-controller
+      run: kubectl rollout status -f ./deployment/prod/apps/controller/deployment.yaml
 
     - name: Get Server Deployment Status
-      run: kubectl rollout status deployment/diner-server
+      run: kubectl rollout status -f ./deployment/prod/apps/server/deployment.yaml
 
     - name: Get Watcher Deployment Status
-      run: kubectl rollout status deployment/diner-watcher
+      run: kubectl rollout status -f ./deployment/prod/apps/watcher/deployment.yaml
       
 
       
