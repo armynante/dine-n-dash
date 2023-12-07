@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'apps/**'
+      - 'deployment/**'
+      - 'packages/**'
 
 jobs:
   build-and-deploy:
