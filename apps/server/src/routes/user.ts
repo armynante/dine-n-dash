@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import db from '../db.js';
 import { verifyToken } from 'diner-utilities';
-import { User } from 'diner-utilities/dist/types.js';
+import { Types } from 'diner-utilities';
 
 const router = Router() as Router;
 
@@ -42,7 +42,7 @@ router.put('/', verifyToken, async (req, res) => {
             .update(req.body)
             .eq('id', user.id)
             .select()
-            .single() as unknown as { data: User, error: Error };
+            .single() as unknown as { data: Types.User, error: Error };
 
         if (error) {
             throw error;
