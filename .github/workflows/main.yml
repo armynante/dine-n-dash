@@ -23,22 +23,22 @@ jobs:
     - name: Delete old Controller images
       run: |
         # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags humidresearch/diner-controller | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-controller {} --force
+        doctl registry repository list-tags diner-controller | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-controller {} --force
     
     - name: Delete old Server images
       run: |
         # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags humidresearch/diner-server | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-server {} --force
+        doctl registry repository list-tags diner-server | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-server {} --force
 
     - name: Delete old Watcher images
       run: |
         # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags humidresearch/diner-watcher | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-watcher {} --force
+        doctl registry repository list-tags diner-watcher | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-watcher {} --force
 
     - name: Delete old Web images
       run: |
         # List all tags, sort them in reverse order, skip the first 5, and delete the rest
-        doctl registry repository list-tags humidresearch/diner-web | tail -n +6 | xargs -I {} doctl registry repository delete-manifest humidresearch/diner-web {} --force
+        doctl registry repository list-tags diner-web | tail -n +6 | xargs -I {} doctl registry repository delete-manifest diner-web {} --force
 
     # Build and Push Docker image for each service
     - name: Build and Push Docker image for Controller
