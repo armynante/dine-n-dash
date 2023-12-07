@@ -64,16 +64,16 @@ jobs:
 
       # Update Deployment Files
     - name: Update server deployment file
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yml
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' ./deployment/prod/apps/server/deployment.yml
     
     - name: Update watcher deployment file
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/watcher/deployment.yml
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' ./deployment/prod/apps/watcher/deployment.yml
     
     - name: Update controller deployment file
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/controller/deployment.yml
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'|' ./deployment/prod/apps/controller/deployment.yml
     
     - name: Update web deployment file
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/web/deployment.yml
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yml
 
     - name: Save DigitalOcean kubeconfig with short-lived credentials
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dine-n-dash-cluster
