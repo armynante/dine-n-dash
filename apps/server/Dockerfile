@@ -1,8 +1,10 @@
-# Build stage
-FROM node:16-bullseye-slim AS build
+FROM node:16-bullseye-slim
 
-RUN npm install -g pnpm nodemon typescript
+RUN apt-get update && apt-get install -y python3 build-essential
 
+RUN npm install -g pnpm nodemon pm2 typescript
+
+# Set the working directory
 WORKDIR /diner-mono
 
 COPY . .
@@ -10,14 +12,12 @@ COPY . .
 RUN pnpm recursive install
 RUN pnpm tsc -b
 
-# Production stage
-FROM node:16-bullseye-slim AS production
+RUN ls -la
 
 WORKDIR /diner-mono/apps/server
-
-# Copy from build stage
-COPY --from=build /diner-mono .
+# Change to the server directory
 
 EXPOSE 4000
 
+# Use nodemon to run the server, watching the TypeScript files
 CMD ["nodemon", "./dist/index.js"]
