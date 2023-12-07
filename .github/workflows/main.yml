@@ -23,8 +23,27 @@ jobs:
     - name: Remove old images from Container Registry
       uses: ripplr-io/docr-image-remove@v1
       with:
-        image_repository: image-repository # required
+        image_repository: diner-server # required
         buffer_size: 5
+
+    - name: Remove old images from Container Registry
+      uses: ripplr-io/docr-image-remove@v1
+      with:
+        image_repository: diner-controller # required
+        buffer_size: 5
+
+    - name: Remove old images from Container Registry
+      uses: ripplr-io/docr-image-remove@v1
+      with:
+        image_repository: diner-watcher # required
+        buffer_size: 5
+
+    - name: Remove old images from Container Registry
+      uses: ripplr-io/docr-image-remove@v1
+      with:
+        image_repository: diner-web # required
+        buffer_size: 5
+
 
     # Build and Push Docker image for each service
     - name: Build and Push Docker image for Controller
