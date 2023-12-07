@@ -1,0 +1,17 @@
+name: Registry Garbage Collection
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight
+
+jobs:
+  garbage-collect:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+    - name: Garbage Collect Registry
+      run: doctl registry garbage-collection start humidresearch --force
