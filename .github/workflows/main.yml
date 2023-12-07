@@ -144,9 +144,6 @@ jobs:
       
     - name: Deploy Web to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/web/deployment.yaml
-    
-    - name: Deploy to DigitalOcean Kubernetes
-      run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yaml
 
       # veryify deploy to Kubernetes
     - name: Get Web Deployment Status
