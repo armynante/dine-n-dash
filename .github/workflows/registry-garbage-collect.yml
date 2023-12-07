@@ -24,7 +24,7 @@ jobs:
           DIGESTS=$(doctl registry repository list-manifests $REPO --no-header | awk '$NF == "[]" { print $0 }' |  tail -n 5 | awk '{ print $1 }')
 
           # Loop through and delete each untagged image
-          doctl registry repository delete-manifest $REPO "$DIGESTS" --force
+          echo "doctl registry repository delete-manifest $REPO "$DIGESTS" --force"
 
         done
       shell: bash
