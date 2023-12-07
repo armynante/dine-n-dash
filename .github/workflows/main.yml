@@ -23,32 +23,32 @@ jobs:
     # Build and Push Docker image for each service
     - name: Build and Push Docker image for Controller
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/controller:${{ github.sha }} -f ./apps/controller/Dockerfile . --push
+        docker build -t registry.digitalocean.com/humidresearch/diner-controller:${{ github.sha }} -f ./apps/controller/Dockerfile . --push
         
     - name: Build and Push Docker image for Server
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/server:${{ github.sha }} -f ./apps/server/Dockerfile . --push
+        docker build -t registry.digitalocean.com/humidresearch/diner-server:${{ github.sha }} -f ./apps/server/Dockerfile . --push
 
     - name: Build and Push Docker image for Watcher
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/watcher:${{ github.sha }} -f ./apps/watcher/Dockerfile . --push
+        docker build -t registry.digitalocean.com/humidresearch/diner-watcher:${{ github.sha }} -f ./apps/watcher/Dockerfile . --push
 
     - name: Build and Push Docker image for Web
       run: |
-        docker build -t registry.digitalocean.com/humidresearch/web:${{ github.sha }} -f ./apps/web/Dockerfile . --push
+        docker build -t registry.digitalocean.com/humidresearch/diner-web:${{ github.sha }} -f ./apps/web/Dockerfile . --push
 
     # Update Deployment Files
     - name: Update deployment file for Controller
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/controller:'${TAG}'|' ./deployment/prod/apps/controller/deployment.yaml
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'|' ./deployment/prod/apps/controller/deployment.yaml
 
     - name: Update deployment file for Server
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/server:'${TAG}'|' ./deployment/prod/apps/server/deployment.yaml
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'|' ./deployment/prod/apps/server/deployment.yaml
 
     - name: Update deployment file for Watcher
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/watcher:'${TAG}'|' ./deployment/prod/apps/watcher/deployment.yaml
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'|' ./deployment/prod/apps/watcher/deployment.yaml
 
     - name: Update deployment file for Web
-      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yaml
+      run: TAG=${{ github.sha }} && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'|' ./deployment/prod/apps/web/deployment.yaml
 
     - name: Save DigitalOcean kubeconfig
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 do-nyc3-dine-n-dash-cluster
