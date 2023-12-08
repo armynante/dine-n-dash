@@ -11,7 +11,9 @@
     "logs:watcher": "aws logs tail '/aws/lambda/diner-watcher-service' --follow",
     "logs:controller": "./tools/logs/controller-logs.sh",
     "connect:controller": "ssh ubuntu@ec2-52-202-82-154.compute-1.amazonaws.com",
-    "dev": "tsc -b -w"
+    "dev": "tsc -b -w",
+    "build:secrets": "tools/load_secrets.sh",
+    "deploy:secrets": "tools/deploy_secrets.sh"
   },
   "devDependencies": {
     "@aws-sdk/client-lambda": "^3.398.0",
