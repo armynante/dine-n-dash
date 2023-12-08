@@ -15,9 +15,9 @@ spec:
       containers:
       - name: diner-web
         image: <IMAGE>  # Specify your Controller service Docker image
-        # envFrom:
-        #  - secretRef:
-        #      name: prod-secrets
+        envFrom:
+         - secretRef:
+             name: prod-secrets
         ports:
         - containerPort: 4321  # Adjust if your Controller service listens on a different port
         resources:

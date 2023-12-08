@@ -5,7 +5,7 @@ SECRET_NAME="prod-secrets"
 NAMESPACE="default"  # Change as needed
 
 # Specify the output file
-OUTPUT_FILE="deployment/prod/common/secrets.yaml"  # Change this to your desired file name
+OUTPUT_FILE="deployment/prod/common/secrets_file.yaml"  # Change this to your desired file name
 
 # Start of the Secret YAML, redirecting output to the specified file
 echo "apiVersion: v1" > "$OUTPUT_FILE"
@@ -24,3 +24,7 @@ while read -r line; do
     echo "  $KEY: $VALUE" >> "$OUTPUT_FILE"
   fi
 done < .env
+
+kubectl config use-context do-nyc3-dine-n-dash-cluster
+
+kubectl apply -f deployment/prod/common/secrets_file.yaml

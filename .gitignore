@@ -54,3 +54,4 @@ packages/resy/tsconfig.tsbuildinfo
 tools/deploy/tsconfig.tsbuildinfo
 packages/utility/tsconfig.tsbuildinfo
 deployment/prod/common/secrets.yaml
+deployment/prod/common/secrets_file.yaml
