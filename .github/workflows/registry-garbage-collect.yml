@@ -1,37 +1,37 @@
-# name: Registry Garbage Collection
+name: Registry Garbage Collection
 
-# on:
-#   schedule:
-#     - cron: '0 0 * * *' # Runs every day at midnight
-#   workflow_dispatch:
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight
+  workflow_dispatch:
 
-# jobs:
-#   garbage-collect:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Install doctl
-#       uses: digitalocean/action-doctl@v2
-#       with:
-#         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+jobs:
+  garbage-collect:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
     
-#     - name: Delete Untagged Images
-#       run: |
-#         REPO_NAMES=("diner-server" "diner-watcher" "diner-controller" "diner-web")
-#         for REPO in "${REPO_NAMES[@]}"; do
-#           echo "Deleting untagged images for $REPO"
-#           # Fetch the list of digests for untagged images
-#           DIGESTS=$(doctl registry repository list-manifests $REPO --no-header | awk '$NF == "[]" { print $0 }' |  tail -n 5 | awk '{ print $1 }')
-#           # Loop through and delete each untagged image
-#           for DIGEST in $DIGESTS; do
-#             echo "Deleting $DIGEST from $REPO"
-#             echo "doctl registry repository delete-manifest $REPO "$DIGEST" -f"
-#             doctl registry repository delete-manifest $REPO "$DIGEST" -f
-#           done
-#         done
-#       shell: bash
+    - name: Delete Untagged Images
+      run: |
+        REPO_NAMES=("diner-server" "diner-watcher" "diner-controller" "diner-web")
+        for REPO in "${REPO_NAMES[@]}"; do
+          echo "Deleting untagged images for $REPO"
+          # Fetch the list of digests for untagged images
+          DIGESTS=$(doctl registry repository list-manifests $REPO --no-header | awk '$NF == "[]" { print $0 }' |  tail -n 5 | awk '{ print $1 }')
+          # Loop through and delete each untagged image
+          for DIGEST in $DIGESTS; do
+            echo "Deleting $DIGEST from $REPO"
+            echo "doctl registry repository delete-manifest $REPO "$DIGEST" -f"
+            doctl registry repository delete-manifest $REPO "$DIGEST" -f
+          done
+        done
+      shell: bash
 
-#     # - name: Garbage Collect Registry
-#     #   run: doctl registry garbage-collection start --include-untagged-manifests humidresearch --force
+    # - name: Garbage Collect Registry
+    #   run: doctl registry garbage-collection start --include-untagged-manifests humidresearch --force
     
       
     

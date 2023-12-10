@@ -13,18 +13,12 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [server, web, controller, watcher]
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-
-    # - name: Detect changes
-    #   id: changes
-    #   run: |
-    #     echo "::set-output name=server::$(git diff --quiet HEAD^ HEAD apps/server || echo 'true')"
-    #     echo "::set-output name=web::$(git diff --quiet HEAD^ HEAD apps/web || echo 'true')"
-    #     echo "::set-output name=controller::$(git diff --quiet HEAD^ HEAD apps/controller || echo 'true')"
-    #     echo "::set-output name=watcher::$(git diff --quiet HEAD^ HEAD apps/watcher || echo 'true')"
-      
 
     - name: Install doctl
       uses: digitalocean/action-doctl@v2
@@ -33,34 +27,6 @@ jobs:
 
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 1200
-
-    # - name: Remove old server images from Container Registry
-    #   #if: steps.changes.outputs.server == 'true'
-    #   uses: ripplr-io/docr-image-remove@v1
-    #   with:
-    #     image_repository: diner-server # required
-    #     buffer_size: 5
-
-    # - name: Remove old controller images from Container Registry
-    #   # if: steps.changes.outputs.controller == 'true'
-    #   uses: ripplr-io/docr-image-remove@v1
-    #   with:
-    #     image_repository: diner-controller # required
-    #     buffer_size: 5
-
-    # - name: Remove old watcher images from Container Registry
-    #   # if: steps.changes.outputs.watcher == 'true'
-    #   uses: ripplr-io/docr-image-remove@v1
-    #   with:
-    #     image_repository: diner-watcher # required
-    #     buffer_size: 5
-
-    # - name: Remove old web images from Container Registry
-    #   # if: steps.changes.outputs.web == 'true'
-    #   uses: ripplr-io/docr-image-remove@v1
-    #   with:
-    #     image_repository: diner-web # required
-    #     buffer_size: 5
 
     - name: Cache Docker layers
       uses: actions/cache@v2
@@ -77,109 +43,26 @@ jobs:
       id: short_sha
       run: echo "::set-output name=sha_short::$(echo ${GITHUB_SHA} | head -c7)"
 
-    - name: Build and Push Docker image for Controller
-      # if: steps.changes.outputs.controller == 'true'
+    - name: Build and Push Docker image for ${{ matrix.app }}
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: ./apps/controller/Dockerfile
+        file: ./apps/${{ matrix.app }}/Dockerfile
         push: true
-        tags: registry.digitalocean.com/humidresearch/diner-controller:${{ steps.short_sha.outputs.sha_short }}-controller
+        tags: registry.digitalocean.com/humidresearch/diner:${{ steps.short_sha.outputs.sha_short }}-${{ matrix.app }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
-    - name: Build and Push Docker image for Server
-      #if: steps.changes.outputs.server == 'true'
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: ./apps/server/Dockerfile
-        push: true
-        tags: registry.digitalocean.com/humidresearch/diner-server:${{ steps.short_sha.outputs.sha_short }}-server
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
-
-    - name: Build and Push Docker image for Watcher
-      # if: steps.changes.outputs.watcher == 'true'
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: ./apps/watcher/Dockerfile
-        push: true
-        tags: registry.digitalocean.com/humidresearch/diner-watcher:${{ steps.short_sha.outputs.sha_short }}-watcher
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
-
-    - name: Build and Push Docker image for Web
-      # if: steps.changes.outputs.web == 'true'
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: ./apps/web/Dockerfile
-        push: true
-        tags: registry.digitalocean.com/humidresearch/diner-web:${{ steps.short_sha.outputs.sha_short }}-web
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
-
-      # Update Deployment Files
-    - name: Update server deployment file
-      # if: steps.changes.outputs.server == 'true'
+    - name: Update ${{ matrix.app }} deployment file
       run: |
-        TAG=$(echo $GITHUB_SHA | head -c7)
-        echo "TAG: $TAG"
-        cat $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yaml
-        sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-server:'${TAG}'-server|' $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yaml
-        cat $GITHUB_WORKSPACE/deployment/prod/apps/server/deployment.yaml
-    
-    - name: Update watcher deployment file
-      # if: steps.changes.outputs.watcher == 'true'
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-watcher:'${TAG}'-watcher|' $GITHUB_WORKSPACE/deployment/prod/apps/watcher/deployment.yaml
-    
-    - name: Update controller deployment file
-      # if: steps.changes.outputs.controller == 'true'
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-controller:'${TAG}'-controller|' $GITHUB_WORKSPACE/deployment/prod/apps/controller/deployment.yaml
-    
-    - name: Update web deployment file
-      # if: steps.changes.outputs.web == 'true'
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner-web:'${TAG}'-web|' $GITHUB_WORKSPACE/deployment/prod/apps/web/deployment.yaml
+        TAG=${{ steps.short_sha.outputs.sha_short }}-${{ matrix.app }}
+        sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/${{ matrix.app }}/deployment.yaml
 
     - name: Save DigitalOcean kubeconfig with short-lived credentials
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dine-n-dash-cluster
       
-      # Deploy to Kubernetes
-    - name: Deploy Controller to Kubernetes
-      # if: steps.changes.outputs.controller == 'true'
-      run: kubectl apply -f ./deployment/prod/apps/controller/deployment.yaml
-      
-    - name: Deploy Server to Kubernetes
-      # if: steps.changes.outputs.server == 'true'
-      run: kubectl apply -f ./deployment/prod/apps/server/deployment.yaml
-      
-    - name: Deploy Watcher to Kubernetes
-      # if: steps.changes.outputs.watcher == 'true'
-      run: kubectl apply -f ./deployment/prod/apps/watcher/deployment.yaml
-      
-    - name: Deploy Web to Kubernetes
-      # if: steps.changes.outputs.web == 'true'
-      run: kubectl apply -f ./deployment/prod/apps/web/deployment.yaml
+    - name: Deploy ${{ matrix.app }} to Kubernetes
+      run: kubectl apply -f ./deployment/prod/apps/${{ matrix.app }}/deployment.yaml
 
-      # veryify deploy to Kubernetes
-    - name: Get Web Deployment Status
-      # if: steps.changes.outputs.web == 'true'
-      run: kubectl rollout status -f ./deployment/prod/apps/web/deployment.yaml
-
-    - name: Get Controller Deployment Status
-      # if: steps.changes.outputs.controller == 'true'
-      run: kubectl rollout status -f ./deployment/prod/apps/controller/deployment.yaml
-
-    - name: Get Server Deployment Status
-      # if: steps.changes.outputs.server == 'true'
-      run: kubectl rollout status -f ./deployment/prod/apps/server/deployment.yaml
-
-    - name: Get Watcher Deployment Status
-      # if: steps.changes.outputs.watcher == 'true'
-      run: kubectl rollout status -f ./deployment/prod/apps/watcher/deployment.yaml
-      
-
-      
-      
+    - name: Get ${{ matrix.app }} Deployment Status
+      run: kubectl rollout status -f ./deployment/prod/apps/${{ matrix.app }}/deployment.yaml

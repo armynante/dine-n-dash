@@ -23,7 +23,7 @@ while read -r line; do
     VALUE=$(echo $line | cut -f2- -d'=' | base64)
     echo "  $KEY: $VALUE" >> "$OUTPUT_FILE"
   fi
-done < .env
+done < prod.env
 
 kubectl config use-context do-nyc3-dine-n-dash-cluster
 

@@ -4,6 +4,7 @@ services:
     build: 
       context: .
       dockerfile: ./apps/server/Dockerfile
+    image: diner-server-dev
     ports:
       - 4000:4000
     expose:
@@ -21,6 +22,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/controller/Dockerfile
+    image: diner-controller-dev
     ports:
       - 8000:8000
     expose:
@@ -38,6 +40,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/watcher/Dockerfile
+    image: diner-watcher-dev
     ports:
       - 8080:8080
     expose:
@@ -55,6 +58,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
+    image: diner-web-dev
     restart: on-failure
     ports:
       - 4321:4321
