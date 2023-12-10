@@ -7,7 +7,6 @@
     { "path": "./apps/cli/tsconfig.json"},
     { "path": "./apps/controller/tsconfig.json"},
     { "path": "./apps/watcher/tsconfig.json"},
-    { "path": "./tools/deploy/tsconfig.json" },
   ],
   "exclude": [
     "node_modules",
