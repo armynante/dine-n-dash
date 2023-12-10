@@ -2,11 +2,13 @@
   "name": "diner-controller",
   "version": "0.0.0",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "tsc -b -w",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "safestart":"node --experimental-modules dist/index.js"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.398.0",

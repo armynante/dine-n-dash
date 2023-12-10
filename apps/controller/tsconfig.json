@@ -1,15 +1,15 @@
 {
   "extends": "../../tsconfig.settings.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "ESNext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
   },
   "references": [
-    { "path": "../../packages/utility/tsconfig.json" },
+    { "path": "../../packages/utility/tsconfig.json"},
     { "path": "../../packages/resy/tsconfig.json" }
   ],
   "exclude": [
