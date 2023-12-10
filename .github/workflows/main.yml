@@ -28,13 +28,14 @@ jobs:
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 1200
 
-    - name: Cache Docker layers
-      uses: actions/cache@v2
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
       with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
+        context: .
+        push: true
+        tags: user/app:latest
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
   
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -59,10 +60,18 @@ jobs:
         sed -i 's|<IMAGE>|registry.digitalocean.com/humidresearch/diner:'${TAG}'|' $GITHUB_WORKSPACE/deployment/prod/apps/${{ matrix.app }}/deployment.yaml
 
     - name: Save DigitalOcean kubeconfig with short-lived credentials
-      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 dine-n-dash-cluster
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 k8s-1-28-2-do-0-nyc1-1702233021414
       
     - name: Deploy ${{ matrix.app }} to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/${{ matrix.app }}/deployment.yaml
 
     - name: Get ${{ matrix.app }} Deployment Status
       run: kubectl rollout status -f ./deployment/prod/apps/${{ matrix.app }}/deployment.yaml
+
+    - name: Deploy ${{ matrix.app }} service to Kubernetes
+      run: kubectl apply -f ./deployment/prod/apps/${{ matrix.app }}/service.yaml
+
+    - name: Get ${{ matrix.app }} Service Status
+      run: kubectl rollout status -f ./deployment/prod/apps/${{ matrix.app }}/service.yaml
+
+

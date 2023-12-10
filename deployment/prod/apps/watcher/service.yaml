@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: watcher
 spec:
+  type: ClusterIP
   selector:
     app: watcher
   ports:
