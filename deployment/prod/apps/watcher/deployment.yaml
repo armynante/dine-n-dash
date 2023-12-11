@@ -19,7 +19,7 @@ spec:
          - secretRef:
              name: prod-secrets
         ports:
-        - containerPort: 8000  # Adjust if your Controller service listens on a different port
+        - containerPort: 8080  # Adjust if your Controller service listens on a different port
         resources:
           requests:
             memory: "64Mi"

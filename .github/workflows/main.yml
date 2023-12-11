@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [server, web, controller, watcher]
+        app: [api, web, controller, watcher]
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
       
     - name: Deploy ${{ matrix.app }} to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/${{ matrix.app }}/deployment.yaml
-      
+
     - name: Deploy ${{ matrix.app }} service to Kubernetes
       run: kubectl apply -f ./deployment/prod/apps/${{ matrix.app }}/service.yaml
 

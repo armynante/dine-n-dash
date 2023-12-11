@@ -25,6 +25,6 @@ while read -r line; do
   fi
 done < prod.env
 
-kubectl config use-context do-nyc3-dine-n-dash-cluster
+kubectl config use-context do-nyc1-k8s-1-28-2-do-0-nyc1-1702233021414
 
 kubectl apply -f deployment/prod/common/secrets_file.yaml
