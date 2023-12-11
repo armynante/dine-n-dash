@@ -13,7 +13,7 @@ spec:
         app: api
     spec:
       containers:
-      - name: diner-server
+      - name: diner-api
         image: <IMAGE>  # Specify your API service Docker image
         envFrom:
          - secretRef:
