@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-deployment
+  name: server-deployment
 spec:
   replicas: 1  # Adjust the number of replicas as needed
   selector:
