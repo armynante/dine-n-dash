@@ -34,6 +34,6 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: api
+              name: server
               port:
                 number: 4000
