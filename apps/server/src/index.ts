@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import express, { Request, Response } from 'express';
-import serverless from 'serverless-http';
 import watcherRoutes from './routes/watchers.js';
 import authRoutes from './routes/auth.js';
 import resyRoutes from './routes/resy.js';
@@ -59,15 +58,11 @@ app.get('/', (req: Request, res: Response) => {
 
 let handle;
 
-if (process.env.NODE_ENV === 'development') {    
-    console.log('::::DEV::: Server initialized');
-    const port = process.env.SERVER_PORT || 4000;
-    app.listen(port, () => {
-        console.log(`Server listening on port ${port}`);
-    });
-} else {
-    console.log('::::PROD::: Server initialized');
-    handle = serverless(app);
-}
+console.log(':::Server initialized:::');
+const port = process.env.SERVER_PORT || 4000;
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+});
+
 
 export const handler = handle;
