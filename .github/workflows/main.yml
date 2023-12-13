@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [api, web, controller, watcher]
+        app: [server, web, controller, watcher]
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
