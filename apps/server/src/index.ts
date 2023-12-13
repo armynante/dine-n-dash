@@ -56,13 +56,8 @@ app.get('/', (req: Request, res: Response) => {
         },
     );});
 
-let handle;
-
 console.log(':::Server initialized:::');
 const port = process.env.SERVER_PORT || 4000;
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
-
-
-export const handler = handle;
