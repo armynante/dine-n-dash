@@ -1,21 +1,13 @@
 import express, { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { DevWorker, Worker, verifyToken } from 'diner-utilities';
+import { DevWorker, verifyToken } from 'diner-utilities';
 import cron from 'node-cron';
 import db from './db.js';
 
 const app = express();
 app.use(express.json());
 
-let WatcherQueue:Worker | DevWorker;
-
-if (process.env.NODE_ENV === 'development') {
-    console.log('Using dev queue');
-    WatcherQueue = new DevWorker();
-} else {
-    console.log('Using prod queue');
-    WatcherQueue = new Worker();
-}
+const WatcherQueue = new DevWorker();
 
 let task:cron.ScheduledTask;
 
