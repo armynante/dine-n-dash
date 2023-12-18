@@ -1,0 +1,25 @@
+# Use a multi-stage build to install dependencies and build the application
+FROM node:18-bullseye-slim as builder
+
+# Install global packages
+RUN npm install -g pnpm
+
+# Set the working directory
+WORKDIR /diner-web
+
+# Copy the application code
+COPY ./apps/web/package.json package.json
+# Install dependencies
+RUN pnpm install
+
+COPY apps/web/ ./
+
+# Set environment variables
+ENV HOST=0.0.0.0
+ENV PORT=4321
+
+# Expose the necessary port
+EXPOSE 4321
+
+# Run the app
+CMD ["pnpm", "run", "start"]

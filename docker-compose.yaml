@@ -57,20 +57,23 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./apps/web/Dockerfile
+      dockerfile: ./apps/web/Dockerfile.dev
     image: diner-web-dev
     restart: on-failure
     ports:
-      - 4321:4321
+      - 3000:3000
     tty: true
     stdin_open: true
-    # volumes:
-      # - ./apps/web/src:/diner-mono/src
-      # - ./apps/web/static:/diner-mono/static
+    environment:
+      - HOST=0.0.0.0
+    volumes:
+      - ./apps/web/src:/diner-web/src
+      - ./apps/web/static:/diner-web/static
       # node_modules is not mounted because it is installed in the container
-      # - ./apps/web/vite.config.js:/diner-mono/vite.config.js
-      # - ./apps/web/tsconfig.json:/diner-mono/tsconfig.json
-      # - ./apps/web/svelte.config.js:/diner-mono/svelte.config.js
+      - ./apps/web/astro.config.js:/diner-web/astro.config.js
+      - ./apps/web/tailwind.config.cjs:/diner-web/tailwind.config.cjs
+      # - ./apps/web/tsconfig.json:/diner-web/tsconfig.json
+      # - ./apps/web/svelte.config.js:/diner-web/svelte.config.js
 
   redis:
     image: redis:6.2-alpine
