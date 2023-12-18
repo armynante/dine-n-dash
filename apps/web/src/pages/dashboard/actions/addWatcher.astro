@@ -4,6 +4,7 @@ import Tiny from '../../../components/Buttons/Tiny.astro';
 const data = await Astro.request.formData();
 let restaurant = data.get('restaurant');
 restaurant =JSON.parse(restaurant);
+let today = new Date().toISOString().split('T')[0];
 ---
 <li class="py-4 px-4 flex flex-col overflow-hidden space-y-3 outline" id="createWatcherForm">
   <form 
@@ -33,7 +34,7 @@ restaurant =JSON.parse(restaurant);
     
       <div class=" col-span-1 flex-col flex">
         <label for="date" class="text-sm">Date</label>
-        <input name="date" type="date" value="2023-09-23" class="border border-gray-300 rounded-md p-2" />
+        <input name="date" type="date" value={today} class="border border-gray-300 rounded-md p-2" />
       </div>
       <div class="col-span-1 grid place-items-center pt-5 pb-1 px-4">
         <button 
