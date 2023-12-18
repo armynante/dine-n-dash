@@ -15,5 +15,5 @@ jobs:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
     
     - name: Start Garbage Collection
-      run: doctl registry garbage-collection start --include-untagged-manifests diner --force
+      run: doctl registry garbage-collection start --include-untagged-manifests humidresearch --force
       shell: bash
