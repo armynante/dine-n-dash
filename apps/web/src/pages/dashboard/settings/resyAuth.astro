@@ -16,6 +16,8 @@ console.log("Astro.request.method");
 
 if ( Astro.request.method === "POST" ) {
   const formData = await Astro.request.formData();
+  resyEmail = formData.get("resyEmail") as string;
+  resyPass = formData.get("resyPass") as string;
   try {
     const { data } = await axios({
       url: `${PUBLIC_API_URL}/resy/login`,
@@ -32,7 +34,7 @@ if ( Astro.request.method === "POST" ) {
     success = data.message || "Success";
     resyToken = data?.data?.token;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     // @ts-ignore
     errorMsg = error?.response?.data?.message || "Something went wrong";
   }

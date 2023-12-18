@@ -3,7 +3,7 @@ services:
   server:
     build: 
       context: .
-      dockerfile: ./apps/server/Dockerfile
+      dockerfile: ./apps/server/Dockerfile.dev
     image: diner-server-dev
     ports:
       - 4000:4000
@@ -21,7 +21,7 @@ services:
   controller:
     build:
       context: .
-      dockerfile: ./apps/controller/Dockerfile
+      dockerfile: ./apps/controller/Dockerfile.dev
     image: diner-controller-dev
     ports:
       - 8000:8000
@@ -39,7 +39,7 @@ services:
   watcher:
     build:
       context: .
-      dockerfile: ./apps/watcher/Dockerfile
+      dockerfile: ./apps/watcher/Dockerfile.dev
     image: diner-watcher-dev
     ports:
       - 8080:8080
@@ -64,8 +64,8 @@ services:
       - 3000:3000
     tty: true
     stdin_open: true
-    environment:
-      - HOST=0.0.0.0
+    env_file:
+      - .env
     volumes:
       - ./apps/web/src:/diner-web/src
       - ./apps/web/static:/diner-web/static

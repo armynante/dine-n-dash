@@ -15,7 +15,7 @@ export class ResyService {
             throw new Error('Missing resyApiKey variable');
         }
         this.agent = proxyAgent;
-        this.apiKey = 'ResyAPI api_key="AIcdK2rLXG6TYwJseSbmrBAy3RP81ocd"';
+        this.apiKey = resyApiKey;
     }
 
 
@@ -48,7 +48,7 @@ export class ResyService {
                 'accept-encoding': 'br;q=1.0, gzip;q=0.9, deflate;q=0.8',
             },
             data: data,
-            proxy: this.agent,
+            // proxy: this.agent,
         };
   
         const { data:resyResponse } = await axios(config);

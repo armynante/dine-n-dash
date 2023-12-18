@@ -25,14 +25,15 @@ const agent = ProxyAgent({
     password: process.env.PROXY_PASSWORD!,
 });
 
-const RESY_API_KEY = 'ResyAPI api_key="AIcdK2rLXG6TYwJseSbmrBAy3RP81ocd"';
+const RESY_API_KEY = process.env.RESY_API_KEY!;
 const Resy = new ResyService(agent, RESY_API_KEY);
 
 const router = Router() as Router;
 
 
 router.post('/login', verifyToken, async (req: Request, res: Response) => {
-    console.log('Logging in with Resy auth...');
+    console.log('Resy API Key:', RESY_API_KEY);
+  
     try {
         const { email, password } = req.body;
         const { token: user } = req;
@@ -55,7 +56,7 @@ router.post('/login', verifyToken, async (req: Request, res: Response) => {
             }
         });
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).send({
             message: error.message || 'An error occurred while processing the login request',
         });

@@ -6,7 +6,6 @@ import Primary from "../../components/Buttons/Primary.astro";
 import axios from "axios";
 const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL;
 
-
 let errorMsg = false;
 let emailError = false;
 let confirmError = false;
@@ -62,7 +61,7 @@ if ( Astro.request.method === "POST" ) {
     reminder="Don't have an account?"
     link="/register"
   />
-  <BasicInput type="password" label="password" reminder="Forgot your password?" id="#loading"/>
+  <BasicInput type="password" label="password" reminder="Forgot your password?" id="#loading" link="/forgot-password" />
   <div class="mb-12">
     
   </div>
